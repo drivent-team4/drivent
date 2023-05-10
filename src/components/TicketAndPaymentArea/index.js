@@ -9,18 +9,31 @@ import NoEnrollmentWarning from './NoEnrollmentWarning';
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
   const enrollmentApi = useEnrollment();
+  const [chosenTicketDescription, setChosenTicketDescription] = useState('undefined');
+  const [chosenTicketValue, setChosenTicketValue] = useState(0);
 
   useEffect(() => {
     if (enrollmentApi?.enrollment) setEnrollment(true);
   }, [enrollmentApi.enrollmentLoading]);
 
+  const createTicketResume = (ticketType) => {
+    if (ticketType.isRemote) {
+      setChosenTicketDescription('Online');
+    } else if (ticketType.includesHotel) {
+      setChosenTicketDescription('Presencial + Com Hotel');
+    } else {
+      setChosenTicketDescription('Presencial');
+    }
+    setChosenTicketValue(ticketType.value);
+  };
+
   return (
     <>
       <StyledTypography variant="h4">Ingresso e Pagamento</StyledTypography>
-      {enrollment? (<>
+      {enrollment ? (<>
         <InfoSectionTitle>Ingresso escolhido</InfoSectionTitle>
-        <ChosenTicketInfo>Presencial + Com Hotel<p>R$ 600</p></ChosenTicketInfo>
-      </>): <NoEnrollmentWarning />}
+        <ChosenTicketInfo>{chosenTicketDescription}<p>R$ {chosenTicketValue}</p></ChosenTicketInfo>
+      </>) : <NoEnrollmentWarning />}
     </>
   );
 }
