@@ -19,6 +19,10 @@ export default function BookingArea() {
       {(!ticket || ticket?.status === 'RESERVED') && <TicketWarning>
         Você precisa ter confirmado pagamento antes<br /> de fazer a escolha de hospedagem
       </TicketWarning>}
+
+      {ticket?.status === 'PAID' && (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel) && <TicketWarning>
+        Sua modalidade de ingresso não inclui hospedagem <br /> Prossiga para a escolha de atividades
+      </TicketWarning>}
     </>
   );
 };
