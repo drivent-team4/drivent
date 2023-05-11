@@ -26,4 +26,5 @@ export const TicketModel = styled.div`
 export const TicketContainer = styled.div`
     display: flex;
     gap: 25px;
+    margin-bottom: 45px;
 `;
