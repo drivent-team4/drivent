@@ -7,5 +7,5 @@ export function useHotel() {
 
   const hotels = useAsync(() => getHotel(token));
 
-  return hotels.data;
+  if (!hotels.loading) return hotels.data;
 }

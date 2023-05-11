@@ -22,7 +22,7 @@ export default function Hotel() {
         </TicketWarning>
       )} */}
 
-      {(!ticket || ticket?.status === 'RESERVED') && (
+      {(true) && (
         <ContainerHotel>
           <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
 
