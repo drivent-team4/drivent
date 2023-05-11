@@ -15,14 +15,14 @@ export default function Hotel() {
 
   return (
     <>
-      {/* {(!ticket || ticket?.status === 'RESERVED') && (
+      {(!ticket || ticket?.status === 'RESERVED') && (
         <TicketWarning>
           Você precisa ter confirmado pagamento antes
           <br /> de fazer a escolha de hospedagem
         </TicketWarning>
-      )} */}
+      )}
 
-      {(true) && (
+      {(ticket || ticket?.status === 'PAID') && (
         <ContainerHotel>
           <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
 
