@@ -31,8 +31,9 @@ export default function TicketAndPaymentArea() {
     <>
       <StyledTypography variant="h4">Ingresso e Pagamento</StyledTypography>
       {enrollment ? (<>
-        <InfoSectionTitle>Ingresso escolhido</InfoSectionTitle>
-        <ChosenTicketInfo>{chosenTicketDescription}<p>R$ {chosenTicketValue}</p></ChosenTicketInfo>
+        <InfoSectionTitle>Primeiro, escolha sua modalidade de ingresso</InfoSectionTitle>
+        <ChosenTicketInfo chosen={true}>{chosenTicketDescription}<p>R$ {chosenTicketValue}</p></ChosenTicketInfo>
+        <ChosenTicketInfo chosen={true}>{chosenTicketDescription}<p>R$ {chosenTicketValue}</p></ChosenTicketInfo>
       </>) : <NoEnrollmentWarning />}
     </>
   );
