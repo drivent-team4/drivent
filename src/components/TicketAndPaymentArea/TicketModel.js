@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ChosenTicketInfo = styled.div`
+export const TicketModel = styled.div`
   width: 145px;
   height: 145px;
   border: ${props => props.chosen ? 'none' : '1px solid #CECECE'};
@@ -21,4 +21,9 @@ export const ChosenTicketInfo = styled.div`
   color: #898989;
   font-family: "Roboto", sans-serif;
 }
+`;
+
+export const TicketContainer = styled.div`
+    display: flex;
+    gap: 25px;
 `;
