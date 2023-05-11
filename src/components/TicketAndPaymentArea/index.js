@@ -39,6 +39,6 @@ export default function TicketAndPaymentArea() {
   );
 }
 
-const StyledTypography = styled(Typography)`
+export const StyledTypography = styled(Typography)`
   margin-bottom: 20px!important;
 `;
