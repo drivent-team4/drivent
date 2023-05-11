@@ -16,13 +16,27 @@ export default function Hotel() {
   return (
     <>
       {(!ticket || ticket?.status === 'RESERVED') && (
-        <TicketWarning>
-          Você precisa ter confirmado pagamento antes
-          <br /> de fazer a escolha de hospedagem
-        </TicketWarning>
+        <>
+          <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
+
+          <TicketWarning>
+            Você precisa ter confirmado pagamento antes
+            <br /> de fazer a escolha de hospedagem
+          </TicketWarning>
+        </>
       )}
 
-      {(ticket || ticket?.status === 'PAID') && (
+      {(ticket?.status === 'PAID' && (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel)) && (
+        <>
+          <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
+
+          <TicketWarning>
+            Sua modalidade de ingresso não inclui hospedagem <br /> Prossiga para a escolha de atividades
+          </TicketWarning>
+        </>
+      )}
+
+      {(ticket && ticket?.status === 'PAID' && ticket.TicketType.includesHotel) && (
         <ContainerHotel>
           <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
 
