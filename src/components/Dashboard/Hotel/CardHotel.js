@@ -1,26 +1,23 @@
-import react from 'react';
+import react, { useState } from 'react';
 import styled from 'styled-components';
 import { useHotelRooms } from '../../../hooks/api/useHotelRooms.js';
 import { useBookingInfos } from '../../../hooks/api/useBookingInfos.js';
 
-export default function CardHotel({ id, name, image }) {
-  const hotelWithRooms = useHotelRooms(id);
+export default function CardHotel({ id, name, image, setSelectedHotelRooms, setSelectedHotelId, isSelected }) {
+  const hotelRooms = useHotelRooms(id);
   const bookingInfos = useBookingInfos(id);
+  const [isCardSelected, setIsCardSelected] = useState(false);
 
-  const maxCapacity = hotelWithRooms ? Math.max(...hotelWithRooms.map((room) => room.capacity)) : 0;
-  let totalFreeRooms = 0;
-  if (hotelWithRooms && bookingInfos) {
-    totalFreeRooms =
-      hotelWithRooms.reduce((total, room) => total + room.capacity, 0) -
-      bookingInfos.reduce((total, bookingInfo) => total + bookingInfo.guests, 0);
-  }
+  const roomTypesAvailable = hotelRooms && getRoomTypesAvailable(hotelRooms);
+  const totalFreeRooms = hotelRooms && bookingInfos && calculateTotalFreeRooms(hotelRooms, bookingInfos);
 
-  let roomTypesAvailable = 'Single';
-  if (maxCapacity === 3) roomTypesAvailable = 'Single, Double e Triple';
-  if (maxCapacity === 2) roomTypesAvailable = 'Single, Double';
+  const handleClick = () => {
+    setSelectedHotelRooms(hotelRooms);
+    setSelectedHotelId(id);
+  };
 
   return (
-    <Card>
+    <Card selected={isSelected} onClick={handleClick}>
       <img src={image} alt="ilustração do hotel" />
       <h3>{name}</h3>
       <CardInfo>
@@ -33,6 +30,30 @@ export default function CardHotel({ id, name, image }) {
   );
 }
 
+function getRoomTypesAvailable(hotelRooms) {
+  const capacities = hotelRooms.map((room) => room.capacity);
+  const availableTypes = [];
+
+  if (capacities.includes(1)) availableTypes.push('Single');
+  if (capacities.includes(2)) availableTypes.push('Double');
+  if (capacities.includes(3)) availableTypes.push('Triple');
+
+  if (availableTypes.length === 1) return availableTypes[0];
+  if (availableTypes.length === 2) return `${availableTypes[0]} e ${availableTypes[1]}`;
+
+  const lastType = availableTypes.pop();
+  return `${availableTypes.join(', ')} e ${lastType}`;
+}
+
+function calculateTotalFreeRooms(hotelRooms, bookingInfos) {
+  if (!hotelRooms || !bookingInfos) return 0;
+
+  const totalRoomCapacity = hotelRooms.reduce((total, room) => total + room.capacity, 0);
+  const totalBookedGuests = bookingInfos.reduce((total, bookingInfo) => total + bookingInfo.guests, 0);
+
+  return totalRoomCapacity - totalBookedGuests;
+}
+
 const Card = styled.li`
   display: flex;
   flex-direction: column;
@@ -42,7 +63,7 @@ const Card = styled.li`
 
   width: 196px;
   height: 264px;
-  background: #ebebeb;
+  background: ${({ selected }) => (selected ? '#FFEED2' : '#ebebeb')};
   border-radius: 10px;
 
   img {
@@ -58,6 +79,13 @@ const Card = styled.li`
     line-height: 23px;
 
     color: #343434;
+  }
+
+  :hover {
+    opacity: 0.6;
+  }
+  :active {
+    scale: 0.95;
   }
 `;
 

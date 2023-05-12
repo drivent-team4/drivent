@@ -26,7 +26,7 @@ export default function Hotel() {
         </>
       )}
 
-      {(ticket?.status === 'PAID' && (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel)) && (
+      {ticket?.status === 'PAID' && (ticket?.TicketType.isRemote || !ticket?.TicketType.includesHotel) && (
         <>
           <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
 
@@ -36,7 +36,7 @@ export default function Hotel() {
         </>
       )}
 
-      {(ticket && ticket?.status === 'PAID' && ticket.TicketType.includesHotel) && (
+      {ticket && ticket?.status === 'PAID' && ticket.TicketType.includesHotel && (
         <ContainerHotel>
           <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
 
