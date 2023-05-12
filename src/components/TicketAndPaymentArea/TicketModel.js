@@ -14,6 +14,7 @@ export const TicketModel = styled.div`
   font-size: 1rem;
   color: #454545;
   background-color: ${(props) => (props.chosen ? '#FFEED2' : '#E5E5E5')};
+  cursor: pointer;
   > p {
     margin-top: 0.5rem;
     font-size: 0.875rem;
