@@ -6,6 +6,7 @@ import { InfoSectionTitle } from './InfoSectionTitle';
 import useEnrollment from '../../hooks/api/useEnrollment';
 import NoEnrollmentWarning from './NoEnrollmentWarning';
 import { ReserveButton, TicketContainer, TicketModel } from './TicketModel';
+import CreditCardBox from '../PaymentArea/CreditCardBox';
 
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
