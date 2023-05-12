@@ -1,17 +1,23 @@
-import react from 'react';
+import react, { useState } from 'react';
 import styled from 'styled-components';
 import { useHotelRooms } from '../../../hooks/api/useHotelRooms.js';
 import { useBookingInfos } from '../../../hooks/api/useBookingInfos.js';
 
-export default function CardHotel({ id, name, image }) {
+export default function CardHotel({ id, name, image, setSelectedHotelRooms, setSelectedHotelId, isSelected }) {
   const hotelRooms = useHotelRooms(id);
   const bookingInfos = useBookingInfos(id);
+  const [isCardSelected, setIsCardSelected] = useState(false);
 
-  const roomTypesAvailable = getRoomTypesAvailable(hotelRooms);
-  const totalFreeRooms = calculateTotalFreeRooms(hotelRooms, bookingInfos);
+  const roomTypesAvailable = hotelRooms && getRoomTypesAvailable(hotelRooms);
+  const totalFreeRooms = hotelRooms && bookingInfos && calculateTotalFreeRooms(hotelRooms, bookingInfos);
+
+  const handleClick = () => {
+    setSelectedHotelRooms(hotelRooms);
+    setSelectedHotelId(id);
+  };
 
   return (
-    <Card>
+    <Card selected={isSelected} onClick={handleClick}>
       <img src={image} alt="ilustração do hotel" />
       <h3>{name}</h3>
       <CardInfo>
@@ -57,7 +63,7 @@ const Card = styled.li`
 
   width: 196px;
   height: 264px;
-  background: #ebebeb;
+  background: ${({ selected }) => (selected ? '#FFEED2' : '#ebebeb')};
   border-radius: 10px;
 
   img {
@@ -73,6 +79,13 @@ const Card = styled.li`
     line-height: 23px;
 
     color: #343434;
+  }
+
+  :hover {
+    opacity: 0.6;
+  }
+  :active {
+    scale: 0.95;
   }
 `;
 
