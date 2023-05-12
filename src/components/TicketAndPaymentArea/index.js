@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { ChosenTicketInfo } from './ChosenTicketInfo';
 import { InfoSectionTitle } from './InfoSectionTitle';
 import useEnrollment from '../../hooks/api/useEnrollment';
+import useTicketTypes from '../../hooks/api/useTicketTypes';
 import NoEnrollmentWarning from './NoEnrollmentWarning';
 import useReserveTicket from '../../hooks/api/useReserveTicket';
 import { ReserveButton, TicketContainer, TicketModel } from './TicketModel';
@@ -13,6 +14,12 @@ import CreditCardBox from '../PaymentArea/CreditCardBox';
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
   const enrollmentApi = useEnrollment();
+  const [ticketTypes, setTicketTypes] = useState([]);
+  const [onlineTicket, setOnlineTicket] = useState();
+  const [ticketWithoutHotel, setTicketWithoutHotel] = useState();
+  const [ticketWithHotel, setTicketWithHotel] = useState();
+  const hotelPrice = 'R$ 350';
+  const ticketTypesFetch = useTicketTypes();
   const [chosenTicketDescription, setChosenTicketDescription] = useState('undefined');
   const [chosenTicketValue, setChosenTicketValue] = useState(0);
   const [onlineSelected, setOnlineSelected] = useState(false);
@@ -24,6 +31,16 @@ export default function TicketAndPaymentArea() {
   useEffect(() => {
     if (enrollmentApi?.enrollment) setEnrollment(true);
   }, [enrollmentApi.enrollmentLoading]);
+
+  useEffect(() => {
+    if (ticketTypesFetch?.ticketTypes) {
+      const typesTicket = ticketTypesFetch.ticketTypes;
+      setOnlineTicket(typesTicket[0]);
+      setTicketWithoutHotel(typesTicket[1]);
+      setTicketWithHotel(typesTicket[2]);
+    }
+  }, [ticketTypesFetch.ticketTypes]);
+  console.log(onlineTicket);
 
   const createTicketResume = (ticketType) => {
     if (ticketType.isRemote) {
@@ -62,7 +79,7 @@ export default function TicketAndPaymentArea() {
                 if (!liveSelected === true && onlineSelected === true) setOnlineSelected(false);
               }}
             >
-              Presencial<p>R$ 250</p>
+              Presencial<p>R$ {ticketWithoutHotel.price}</p>
             </TicketModel>
 
             <TicketModel
@@ -76,7 +93,7 @@ export default function TicketAndPaymentArea() {
                 }
               }}
             >
-              Online<p>R$ 100</p>
+              Online<p>R$ {onlineTicket.price}</p>
             </TicketModel>
           </TicketContainer>
 
@@ -101,7 +118,7 @@ export default function TicketAndPaymentArea() {
                     if (!withHotel === true && withoutHotel === true) setWithoutHotel(false);
                   }}
                 >
-                  Com hotel<p>R$ 350</p>
+                  Com hotel<p>{hotelPrice}</p>
                 </TicketModel>
               </TicketContainer>
             </>
