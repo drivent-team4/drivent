@@ -5,7 +5,7 @@ import { ChosenTicketInfo } from './ChosenTicketInfo';
 import { InfoSectionTitle } from './InfoSectionTitle';
 import useEnrollment from '../../hooks/api/useEnrollment';
 import NoEnrollmentWarning from './NoEnrollmentWarning';
-import { TicketContainer, TicketModel } from './TicketModel';
+import { ReserveButton, TicketContainer, TicketModel } from './TicketModel';
 
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
@@ -31,6 +31,10 @@ export default function TicketAndPaymentArea() {
     }
     setChosenTicketValue(ticketType.value);
   };
+
+  function handleReservation() {
+    
+  }
 
   return (
     <>
@@ -90,6 +94,14 @@ export default function TicketAndPaymentArea() {
               </TicketContainer>
             </>
           )}
+          {
+            (onlineSelected || withHotel || withoutHotel) && (
+              <>
+                <InfoSectionTitle>Fechado! O total ficou em <bold>R$ 600</bold>. Agora é só confirmar:</InfoSectionTitle>
+                <ReserveButton>RESERVAR INGRESSOS</ReserveButton>
+              </>
+            )
+          }
           {false && (
             <>
               <InfoSectionTitle>Ingresso escolhido</InfoSectionTitle>
