@@ -5,6 +5,7 @@ import { ChosenTicketInfo } from './ChosenTicketInfo';
 import { InfoSectionTitle } from './InfoSectionTitle';
 import useEnrollment from '../../hooks/api/useEnrollment';
 import NoEnrollmentWarning from './NoEnrollmentWarning';
+import CreditCardBox from '../PaymentArea/CreditCardBox';
 
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
@@ -33,6 +34,8 @@ export default function TicketAndPaymentArea() {
       {enrollment ? (<>
         <InfoSectionTitle>Ingresso escolhido</InfoSectionTitle>
         <ChosenTicketInfo>{chosenTicketDescription}<p>R$ {chosenTicketValue}</p></ChosenTicketInfo>
+        <InfoSectionTitle>Pagamento</InfoSectionTitle>
+        <CreditCardBox />
       </>) : <NoEnrollmentWarning />}
     </>
   );
