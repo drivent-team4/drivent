@@ -8,6 +8,7 @@ import useEnrollment from '../../hooks/api/useEnrollment';
 import NoEnrollmentWarning from './NoEnrollmentWarning';
 import useReserveTicket from '../../hooks/api/useReserveTicket';
 import { ReserveButton, TicketContainer, TicketModel } from './TicketModel';
+import CreditCardBox from '../PaymentArea/CreditCardBox';
 
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
