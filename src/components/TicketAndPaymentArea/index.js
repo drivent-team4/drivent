@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { ChosenTicketInfo } from './ChosenTicketInfo';
 import { InfoSectionTitle } from './InfoSectionTitle';
 import useEnrollment from '../../hooks/api/useEnrollment';
 import NoEnrollmentWarning from './NoEnrollmentWarning';
+import useReserveTicket from '../../hooks/api/useReserveTicket';
 import { ReserveButton, TicketContainer, TicketModel } from './TicketModel';
 
 export default function TicketAndPaymentArea() {
@@ -16,6 +18,7 @@ export default function TicketAndPaymentArea() {
   const [liveSelected, setLiveSelected] = useState(false);
   const [withHotel, setWithHotel] = useState(false);
   const [withoutHotel, setWithoutHotel] = useState(false);
+  const { saveTicket, ticketLoading } = useReserveTicket();
 
   useEffect(() => {
     if (enrollmentApi?.enrollment) setEnrollment(true);
@@ -32,8 +35,16 @@ export default function TicketAndPaymentArea() {
     setChosenTicketValue(ticketType.value);
   };
 
-  function handleReservation() {
-    
+  async function handleReservation() {
+    try {
+      if(onlineSelected) await saveTicket(1);
+      if(withoutHotel) await saveTicket(2);
+      if(withHotel) await saveTicket(3);
+
+      toast('Ticket reservado com sucesso!');
+    } catch (err) {
+      toast('Não foi possível fazer sua reserva!');
+    }
   }
 
   return (
@@ -98,7 +109,7 @@ export default function TicketAndPaymentArea() {
             (onlineSelected || withHotel || withoutHotel) && (
               <>
                 <InfoSectionTitle>Fechado! O total ficou em <bold>R$ 600</bold>. Agora é só confirmar:</InfoSectionTitle>
-                <ReserveButton>RESERVAR INGRESSOS</ReserveButton>
+                <ReserveButton onClick={handleReservation}>RESERVAR INGRESSOS</ReserveButton>
               </>
             )
           }
