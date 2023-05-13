@@ -9,6 +9,7 @@ import NoEnrollmentWarning from './NoEnrollmentWarning';
 import useReserveTicket from '../../hooks/api/useReserveTicket';
 import { ReserveButton, TicketContainer, TicketModel } from './TicketModel';
 import CreditCardBox from '../PaymentArea/CreditCardBox';
+import useTicketTypes from '../../hooks/api/useTicketTypes';
 
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
@@ -19,8 +20,17 @@ export default function TicketAndPaymentArea() {
   const [liveSelected, setLiveSelected] = useState(false);
   const [withHotel, setWithHotel] = useState(false);
   const [withoutHotel, setWithoutHotel] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
   const { saveTicket, ticketLoading } = useReserveTicket();
+  const { ticketTypes } = useTicketTypes();
+  let ticketId;     //ID da reserva feita
 
+  useEffect(() => {
+    if(onlineSelected) setTotalPrice(ticketTypes[0].price); 
+    if(withoutHotel) setTotalPrice(ticketTypes[1].price);
+    if(withHotel) setTotalPrice(ticketTypes[2].price);
+  }, [onlineSelected, withoutHotel, withHotel]);
+  
   useEffect(() => {
     if (enrollmentApi?.enrollment) setEnrollment(true);
   }, [enrollmentApi.enrollmentLoading]);
@@ -37,11 +47,12 @@ export default function TicketAndPaymentArea() {
   };
 
   async function handleReservation() {
+    let ticket;
     try {
-      if(onlineSelected) await saveTicket(1);
-      if(withoutHotel) await saveTicket(2);
-      if(withHotel) await saveTicket(3);
-
+      if(onlineSelected) ticket = await saveTicket(1);
+      if(withoutHotel) ticket = await saveTicket(2);
+      if(withHotel) ticket = await saveTicket(3);
+      ticketId = ticket.id;
       toast('Ticket reservado com sucesso!');
     } catch (err) {
       toast('Não foi possível fazer sua reserva!');
@@ -62,7 +73,7 @@ export default function TicketAndPaymentArea() {
                 if (!liveSelected === true && onlineSelected === true) setOnlineSelected(false);
               }}
             >
-              Presencial<p>R$ 250</p>
+              Presencial<p>R$ {ticketTypes[1].price}</p>
             </TicketModel>
 
             <TicketModel
@@ -76,7 +87,7 @@ export default function TicketAndPaymentArea() {
                 }
               }}
             >
-              Online<p>R$ 100</p>
+              Online<p>R$ {ticketTypes[0].price}</p>
             </TicketModel>
           </TicketContainer>
 
@@ -91,7 +102,7 @@ export default function TicketAndPaymentArea() {
                     if (!withoutHotel === true && withHotel === true) setWithHotel(false);
                   }}
                 >
-                  Sem hotel<p>R$ 0</p>
+                  Sem hotel<p>R$ + 0</p>
                 </TicketModel>
 
                 <TicketModel
@@ -101,7 +112,7 @@ export default function TicketAndPaymentArea() {
                     if (!withHotel === true && withoutHotel === true) setWithoutHotel(false);
                   }}
                 >
-                  Com hotel<p>R$ 350</p>
+                  Com hotel<p>R$ + {ticketTypes[2].price - ticketTypes[1].price}</p>
                 </TicketModel>
               </TicketContainer>
             </>
@@ -109,7 +120,7 @@ export default function TicketAndPaymentArea() {
           {
             (onlineSelected || withHotel || withoutHotel) && (
               <>
-                <InfoSectionTitle>Fechado! O total ficou em <bold>R$ 600</bold>. Agora é só confirmar:</InfoSectionTitle>
+                <InfoSectionTitle>Fechado! O total ficou em <b>R$ {totalPrice}</b>. Agora é só confirmar:</InfoSectionTitle>
                 <ReserveButton onClick={handleReservation}>RESERVAR INGRESSOS</ReserveButton>
               </>
             )
