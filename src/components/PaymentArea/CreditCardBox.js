@@ -5,7 +5,7 @@ import Input from '../Form/Input';
 import Button from '../Form/Button';
 import { InputWrapper } from '../PersonalInformationForm/InputWrapper';
 
-function PaymentForm() {
+function PaymentForm({ handleCreditCard, button }) {
   const [state, setState] = useState({
     number: '',
     expiry: '',
@@ -23,6 +23,9 @@ function PaymentForm() {
   const handleInputFocus = (evt) => {
     setState((prev) => ({ ...prev, focus: evt.target.name }));
   };
+
+  // console.log(state);
+  console.log(handleCreditCard);
 
   return (
     <>
@@ -45,8 +48,8 @@ function PaymentForm() {
           </div>
         </Form>
       </Container>
-      <EndButton type="submit">
-        FINALIZAR PAGAMENTO
+      <EndButton type="submit" onCLick={() => handleCreditCard()}>
+        {button}
       </EndButton>
     </>
   );

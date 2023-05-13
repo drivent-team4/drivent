@@ -20,6 +20,7 @@ export default function TicketAndPaymentArea() {
   const [withHotel, setWithHotel] = useState(false);
   const [withoutHotel, setWithoutHotel] = useState(false);
   const { saveTicket, ticketLoading } = useReserveTicket();
+  const [ reservationCreated, setReservationCreated ] = useState(false);
 
   useEffect(() => {
     if (enrollmentApi?.enrollment) setEnrollment(true);
@@ -41,10 +42,19 @@ export default function TicketAndPaymentArea() {
       if(onlineSelected) await saveTicket(1);
       if(withoutHotel) await saveTicket(2);
       if(withHotel) await saveTicket(3);
-
+      
       toast('Ticket reservado com sucesso!');
+      setReservationCreated(true);
     } catch (err) {
       toast('Não foi possível fazer sua reserva!');
+    }
+  }
+
+  async function handleCreditCard() {
+    try {
+      toast('Pagamento realizado com sucesso!');
+    } catch (err) {
+      toast('Não foi possivel realizar o pagamento!');
     }
   }
 
@@ -53,76 +63,84 @@ export default function TicketAndPaymentArea() {
       <StyledTypography variant="h4">Ingresso e Pagamento</StyledTypography>
       {enrollment ? (
         <>
-          <InfoSectionTitle>Primeiro, escolha sua modalidade de ingresso</InfoSectionTitle>
-          <TicketContainer>
-            <TicketModel
-              chosen={liveSelected}
-              onClick={() => {
-                setLiveSelected(!liveSelected);
-                if (!liveSelected === true && onlineSelected === true) setOnlineSelected(false);
-              }}
-            >
-              Presencial<p>R$ 250</p>
-            </TicketModel>
-
-            <TicketModel
-              chosen={onlineSelected}
-              onClick={() => {
-                setOnlineSelected(!onlineSelected);
-                if (!onlineSelected === true && liveSelected === true) setLiveSelected(false);
-                if(!onlineSelected) {
-                  setWithHotel(false);
-                  setWithoutHotel(false);
-                }
-              }}
-            >
-              Online<p>R$ 100</p>
-            </TicketModel>
-          </TicketContainer>
-
-          {liveSelected && (
+          {!reservationCreated ?
             <>
-              <InfoSectionTitle>Ótimo! Agora escolha sua modalidade de hospedagem</InfoSectionTitle>
-              <TicketContainer>
+              <InfoSectionTitle>Primeiro, escolha sua modalidade de ingresso</InfoSectionTitle><TicketContainer>
                 <TicketModel
-                  chosen={withoutHotel}
+                  chosen={liveSelected}
                   onClick={() => {
-                    setWithoutHotel(!withoutHotel);
-                    if (!withoutHotel === true && withHotel === true) setWithHotel(false);
-                  }}
+                    setLiveSelected(!liveSelected);
+                    if (!liveSelected === true && onlineSelected === true)
+                      setOnlineSelected(false);
+                  } }
                 >
-                  Sem hotel<p>R$ 0</p>
+                  Presencial<p>R$ 250</p>
                 </TicketModel>
 
                 <TicketModel
-                  chosen={withHotel}
+                  chosen={onlineSelected}
                   onClick={() => {
-                    setWithHotel(!withHotel);
-                    if (!withHotel === true && withoutHotel === true) setWithoutHotel(false);
-                  }}
+                    setOnlineSelected(!onlineSelected);
+                    if (!onlineSelected === true && liveSelected === true)
+                      setLiveSelected(false);
+                    if (!onlineSelected) {
+                      setWithHotel(false);
+                      setWithoutHotel(false);
+                    }
+                  } }
                 >
-                  Com hotel<p>R$ 350</p>
+                  Online<p>R$ 100</p>
                 </TicketModel>
               </TicketContainer>
-            </>
-          )}
-          {
-            (onlineSelected || withHotel || withoutHotel) && (
-              <>
-                <InfoSectionTitle>Fechado! O total ficou em <bold>R$ 600</bold>. Agora é só confirmar:</InfoSectionTitle>
-                <ReserveButton onClick={handleReservation}>RESERVAR INGRESSOS</ReserveButton>
-              </>
-            )
-          }
-          {false && (
+    
+              {liveSelected && (
+                <>
+                  <InfoSectionTitle>Ótimo! Agora escolha sua modalidade de hospedagem</InfoSectionTitle>
+                  <TicketContainer>
+                    <TicketModel
+                      chosen={withoutHotel}
+                      onClick={() => {
+                        setWithoutHotel(!withoutHotel);
+                        if (!withoutHotel === true && withHotel === true) setWithHotel(false);
+                      }}
+                    >
+                      Sem hotel<p>R$ 0</p>
+                    </TicketModel>
+    
+                    <TicketModel
+                      chosen={withHotel}
+                      onClick={() => {
+                        setWithHotel(!withHotel);
+                        if (!withHotel === true && withoutHotel === true) setWithoutHotel(false);
+                      }}
+                    >
+                      Com hotel<p>R$ 350</p>
+                    </TicketModel>
+                  </TicketContainer>
+                </>
+              )}
+              {
+                (onlineSelected || withHotel || withoutHotel) && (
+                  <>
+                    <InfoSectionTitle>Fechado! O total ficou em <bold>R$ 600</bold>. Agora é só confirmar:</InfoSectionTitle>
+                    <ReserveButton onClick={handleReservation}>RESERVAR INGRESSOS</ReserveButton>
+                  </>
+                )
+              }
+            </> :
             <>
               <InfoSectionTitle>Ingresso escolhido</InfoSectionTitle>
               <ChosenTicketInfo>
                 {chosenTicketDescription}
                 <p>R$ {chosenTicketValue}</p>
               </ChosenTicketInfo>
+              <InfoSectionTitle>Pagamento</InfoSectionTitle>
+              <CreditCardBox
+                handleCreditCard={handleCreditCard}
+                button={'finalizar pagamento'}
+              />
             </>
-          )}
+          }
         </>
       ) : (
         <NoEnrollmentWarning />
