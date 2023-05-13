@@ -24,6 +24,7 @@ export default function TicketAndPaymentArea() {
   const { saveTicket, ticketLoading } = useReserveTicket();
   const { ticketTypes } = useTicketTypes();
   let ticketId;     //ID da reserva feita
+  const [ reservationCreated, setReservationCreated ] = useState(false);
 
   useEffect(() => {
     if(onlineSelected) setTotalPrice(ticketTypes[0].price); 
@@ -54,8 +55,17 @@ export default function TicketAndPaymentArea() {
       if(withHotel) ticket = await saveTicket(3);
       ticketId = ticket.id;
       toast('Ticket reservado com sucesso!');
+      setReservationCreated(true);
     } catch (err) {
       toast('Não foi possível fazer sua reserva!');
+    }
+  }
+
+  async function handleCreditCard() {
+    try {
+      toast('Pagamento realizado com sucesso!');
+    } catch (err) {
+      toast('Não foi possivel realizar o pagamento!');
     }
   }
 
@@ -64,53 +74,59 @@ export default function TicketAndPaymentArea() {
       <StyledTypography variant="h4">Ingresso e Pagamento</StyledTypography>
       {enrollment ? (
         <>
-          <InfoSectionTitle>Primeiro, escolha sua modalidade de ingresso</InfoSectionTitle>
-          <TicketContainer>
-            <TicketModel
-              chosen={liveSelected}
-              onClick={() => {
-                setLiveSelected(!liveSelected);
-                if (!liveSelected === true && onlineSelected === true) setOnlineSelected(false);
-              }}
-            >
-              Presencial<p>R$ {ticketTypes[1].price}</p>
-            </TicketModel>
+          {!reservationCreated ?
+            <InfoSectionTitle>Primeiro, escolha sua modalidade de ingresso</InfoSectionTitle>
+            <TicketContainer>
+              <TicketModel
+                chosen={liveSelected}
+                onClick={() => {
+                  setLiveSelected(!liveSelected);
+                  if (!liveSelected === true && onlineSelected === true) setOnlineSelected(false);
+                }}
+              >
+                Presencial<p>R$ {ticketTypes[1].price}</p>
+              </TicketModel>
 
-            <TicketModel
-              chosen={onlineSelected}
-              onClick={() => {
-                setOnlineSelected(!onlineSelected);
-                if (!onlineSelected === true && liveSelected === true) setLiveSelected(false);
-                if(!onlineSelected) {
-                  setWithHotel(false);
-                  setWithoutHotel(false);
-                }
-              }}
-            >
-              Online<p>R$ {ticketTypes[0].price}</p>
-            </TicketModel>
-          </TicketContainer>
+              <TicketModel
+                chosen={onlineSelected}
+                onClick={() => {
+                  setOnlineSelected(!onlineSelected);
+                  if (!onlineSelected === true && liveSelected === true) setLiveSelected(false);
+                  if(!onlineSelected) {
+                    setWithHotel(false);
+                    setWithoutHotel(false);
+                  }
+                }}
+              >
+                Online<p>R$ {ticketTypes[0].price}</p>
+              </TicketModel>
+            </TicketContainer>
 
-          {liveSelected && (
+            {liveSelected && (
             <>
-              <InfoSectionTitle>Ótimo! Agora escolha sua modalidade de hospedagem</InfoSectionTitle>
-              <TicketContainer>
+              <InfoSectionTitle>Primeiro, escolha sua modalidade de ingresso</InfoSectionTitle><TicketContainer>
                 <TicketModel
-                  chosen={withoutHotel}
+                  chosen={liveSelected}
                   onClick={() => {
-                    setWithoutHotel(!withoutHotel);
-                    if (!withoutHotel === true && withHotel === true) setWithHotel(false);
-                  }}
+                    setLiveSelected(!liveSelected);
+                    if (!liveSelected === true && onlineSelected === true)
+                      setOnlineSelected(false);
+                  } }
                 >
                   Sem hotel<p>R$ + 0</p>
                 </TicketModel>
 
                 <TicketModel
-                  chosen={withHotel}
+                  chosen={onlineSelected}
                   onClick={() => {
-                    setWithHotel(!withHotel);
-                    if (!withHotel === true && withoutHotel === true) setWithoutHotel(false);
-                  }}
+                    setOnlineSelected(!onlineSelected);
+                    if (!onlineSelected === true && liveSelected === true)
+                      setLiveSelected(false);
+                    if (!onlineSelected) {
+                      setWithHotel(false);
+                      setWithoutHotel(false);
+                    }
+                  } }
                 >
                   Com hotel<p>R$ + {ticketTypes[2].price - ticketTypes[1].price}</p>
                 </TicketModel>
@@ -123,17 +139,22 @@ export default function TicketAndPaymentArea() {
                 <InfoSectionTitle>Fechado! O total ficou em <b>R$ {totalPrice}</b>. Agora é só confirmar:</InfoSectionTitle>
                 <ReserveButton onClick={handleReservation}>RESERVAR INGRESSOS</ReserveButton>
               </>
-            )
-          }
-          {false && (
+                )
+              }
+            </> :
             <>
               <InfoSectionTitle>Ingresso escolhido</InfoSectionTitle>
               <ChosenTicketInfo>
                 {chosenTicketDescription}
                 <p>R$ {chosenTicketValue}</p>
               </ChosenTicketInfo>
+              <InfoSectionTitle>Pagamento</InfoSectionTitle>
+              <CreditCardBox
+                handleCreditCard={handleCreditCard}
+                button={'finalizar pagamento'}
+              />
             </>
-          )}
+          }
         </>
       ) : (
         <NoEnrollmentWarning />
