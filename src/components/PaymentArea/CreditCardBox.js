@@ -24,9 +24,6 @@ function PaymentForm({ handleCreditCard, button }) {
     setState((prev) => ({ ...prev, focus: evt.target.name }));
   };
 
-  // console.log(state);
-  console.log(handleCreditCard);
-
   return (
     <>
       <Container>
@@ -48,7 +45,7 @@ function PaymentForm({ handleCreditCard, button }) {
           </div>
         </Form>
       </Container>
-      <EndButton type="submit" onClick={() => handleCreditCard()}>
+      <EndButton type="submit" onClick={() => handleCreditCard(state)}>
         {button}
       </EndButton>
     </>

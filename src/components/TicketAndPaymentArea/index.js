@@ -12,6 +12,7 @@ import CreditCardBox from '../PaymentArea/CreditCardBox';
 import PaymentMessage from '../PaymentArea/PaymentMesage';
 import useTicketTypes from '../../hooks/api/useTicketTypes';
 import useTicket from '../../hooks/api/useTicket';
+import { savingCreditCard } from '../PaymentArea/savingCreditCard';
 
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
@@ -28,7 +29,7 @@ export default function TicketAndPaymentArea() {
   let ticketId; //ID da reserva feita
   const [reservationCreated, setReservationCreated] = useState(false);
   const [payed, setPayed] = useState(false);
-  const [paymentMessage, setPaymentMessage] = useState({ error: true });
+  const [paymentMessage, setPaymentMessage] = useState({ error: false });
   const ticketApi = useTicket();
 
   useEffect(() => {
@@ -68,21 +69,15 @@ export default function TicketAndPaymentArea() {
     }
   }
 
-  async function handleCreditCard() {
+  async function handleCreditCard(CardPaymentParams) {
     try {
+      await savingCreditCard(CardPaymentParams);
       toast('Pagamento realizado com sucesso!');
       setPayed(true);
     } catch (err) {
       toast('Não foi possivel realizar o pagamento!');
     }
   };
-
-  function payedMessage() {
-    return ({
-      // recive payment status
-      error: true
-    });
-  }
 
   return (
     <>
@@ -163,7 +158,7 @@ export default function TicketAndPaymentArea() {
               <InfoSectionTitle>Pagamento</InfoSectionTitle>
               {!payed ?
                 <CreditCardBox handleCreditCard={handleCreditCard} button={'finalizar pagamento'} /> :
-                <PaymentMessage payed={payedMessage()}/>
+                <PaymentMessage payed={paymentMessage}/>
               }
             </>
           )}
