@@ -10,6 +10,7 @@ import useReserveTicket from '../../hooks/api/useReserveTicket';
 import { ReserveButton, TicketContainer, TicketModel } from './TicketModel';
 import CreditCardBox from '../PaymentArea/CreditCardBox';
 import useTicketTypes from '../../hooks/api/useTicketTypes';
+import useTicket from '../../hooks/api/useTicket';
 
 export default function TicketAndPaymentArea() {
   const [enrollment, setEnrollment] = useState(false);
@@ -25,6 +26,7 @@ export default function TicketAndPaymentArea() {
   const { ticketTypes } = useTicketTypes();
   let ticketId; //ID da reserva feita
   const [reservationCreated, setReservationCreated] = useState(false);
+  const ticketApi = useTicket();
 
   useEffect(() => {
     if (onlineSelected) setTotalPrice(ticketTypes[0].price);
@@ -36,15 +38,17 @@ export default function TicketAndPaymentArea() {
     if (enrollmentApi?.enrollment) setEnrollment(true);
   }, [enrollmentApi.enrollmentLoading]);
 
-  const createTicketResume = (ticketType) => {
-    if (ticketType.isRemote) {
+  const createTicketResume = async() => {
+    const { TicketType } = await ticketApi.getTicket();
+    console.log(TicketType);
+    if (TicketType.isRemote) {
       setChosenTicketDescription('Online');
-    } else if (ticketType.includesHotel) {
+    } else if (TicketType.includesHotel) {
       setChosenTicketDescription('Presencial + Com Hotel');
     } else {
       setChosenTicketDescription('Presencial');
     }
-    setChosenTicketValue(ticketType.value);
+    setChosenTicketValue(TicketType.price);
   };
 
   async function handleReservation() {
@@ -53,7 +57,7 @@ export default function TicketAndPaymentArea() {
       if (onlineSelected) ticket = await saveTicket(1);
       if (withoutHotel) ticket = await saveTicket(2);
       if (withHotel) ticket = await saveTicket(3);
-      ticketId = ticket.id;
+      await createTicketResume();
       toast('Ticket reservado com sucesso!');
       setReservationCreated(true);
     } catch (err) {

@@ -48,7 +48,7 @@ function PaymentForm({ handleCreditCard, button }) {
           </div>
         </Form>
       </Container>
-      <EndButton type="submit" onCLick={() => handleCreditCard()}>
+      <EndButton type="submit" onClick={() => handleCreditCard()}>
         {button}
       </EndButton>
     </>
