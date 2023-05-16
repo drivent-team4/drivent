@@ -26,16 +26,27 @@ export default function TicketAndPaymentArea() {
   const [totalPrice, setTotalPrice] = useState(0);
   const { saveTicket, ticketLoading } = useReserveTicket();
   const { ticketTypes } = useTicketTypes();
-  let ticketId; //ID da reserva feita
+  const [onlinePrice, setOnlinePrice] = useState(0);
+  const [withHotelPrice, setWithHotelPrice] = useState(0);
+  const [withoutHotelPrice, setWithoutHotelPrice] = useState(0);
+  const [ticketId, setTicketId] = useState();
   const [reservationCreated, setReservationCreated] = useState(false);
   const [payed, setPayed] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState({ error: false });
   const ticketApi = useTicket();
 
   useEffect(() => {
-    if (onlineSelected) setTotalPrice(ticketTypes[0].price);
-    if (withoutHotel) setTotalPrice(ticketTypes[1].price);
-    if (withHotel) setTotalPrice(ticketTypes[2].price);
+    if(ticketTypes) {
+      setOnlinePrice(ticketTypes[0].price);
+      setWithoutHotelPrice(ticketTypes[1].price);
+      setWithHotelPrice(ticketTypes[2].price);
+    }
+  }, [ticketTypes]);
+
+  useEffect(() => {
+    if (onlineSelected) setTotalPrice(onlinePrice);
+    if (withoutHotel) setTotalPrice(withoutHotelPrice);
+    if (withHotel) setTotalPrice(withHotelPrice);
   }, [onlineSelected, withoutHotel, withHotel]);
 
   useEffect(() => {
@@ -43,8 +54,9 @@ export default function TicketAndPaymentArea() {
   }, [enrollmentApi.enrollmentLoading]);
 
   const createTicketResume = async() => {
-    const { TicketType } = await ticketApi.getTicket();
-    console.log(TicketType);
+    const { TicketType, id } = await ticketApi.getTicket();
+    setTicketId(id);
+    console.log(ticketId);
     if (TicketType.isRemote) {
       setChosenTicketDescription('Online');
     } else if (TicketType.includesHotel) {
@@ -56,11 +68,10 @@ export default function TicketAndPaymentArea() {
   };
 
   async function handleReservation() {
-    let ticket;
     try {
-      if (onlineSelected) ticket = await saveTicket(1);
-      if (withoutHotel) ticket = await saveTicket(2);
-      if (withHotel) ticket = await saveTicket(3);
+      if (onlineSelected) await saveTicket(1);
+      if (withoutHotel) await saveTicket(2);
+      if (withHotel) await saveTicket(3);
       await createTicketResume();
       toast('Ticket reservado com sucesso!');
       setReservationCreated(true);
@@ -75,6 +86,7 @@ export default function TicketAndPaymentArea() {
       toast('Pagamento realizado com sucesso!');
       setPayed(true);
     } catch (err) {
+      console.log(err);
       toast('Não foi possivel realizar o pagamento!');
     }
   };
@@ -95,7 +107,7 @@ export default function TicketAndPaymentArea() {
                     if (!liveSelected === true && onlineSelected === true) setOnlineSelected(false);
                   }}
                 >
-                  Presencial<p>R$ {ticketTypes[1].price}</p>
+                  Presencial<p>R$ {withoutHotelPrice}</p>
                 </TicketModel>
 
                 <TicketModel
@@ -109,7 +121,7 @@ export default function TicketAndPaymentArea() {
                     }
                   }}
                 >
-                  Online<p>R$ {ticketTypes[0].price}</p>
+                  Online<p>R$ {onlinePrice}</p>
                 </TicketModel>
               </TicketContainer>
 
@@ -134,7 +146,7 @@ export default function TicketAndPaymentArea() {
                         if (!withHotel === true && withoutHotel === true) setWithoutHotel(false);
                       }}
                     >
-                      Com hotel<p>R$ + {ticketTypes[2].price - ticketTypes[1].price}</p>
+                      Com hotel<p>R$ + {withHotelPrice - withoutHotelPrice}</p>
                     </TicketModel>
                   </TicketContainer>
                 </>
@@ -157,7 +169,7 @@ export default function TicketAndPaymentArea() {
               </ChosenTicketInfo>
               <InfoSectionTitle>Pagamento</InfoSectionTitle>
               {!payed ?
-                <CreditCardBox handleCreditCard={handleCreditCard} button={'finalizar pagamento'} /> :
+                <CreditCardBox handleCreditCard={handleCreditCard} button={'finalizar pagamento'} ticketId={ticketId} setPayed={setPayed} /> :
                 <PaymentMessage payed={paymentMessage}/>
               }
             </>

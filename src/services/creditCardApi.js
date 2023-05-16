@@ -12,9 +12,9 @@ export async function getCreditCard(token) {
 
 export async function postCreditCard(token, creditCardInfos) {
   const response = await api.post(
-    '/payment/process',
+    '/payments/process',
     {
-      creditCardInfos,
+      ...creditCardInfos,
     },
     {
       headers: {

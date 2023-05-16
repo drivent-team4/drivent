@@ -3,9 +3,13 @@ import CreditCard from './CreditCard';
 import styled from 'styled-components';
 import Input from '../Form/Input';
 import Button from '../Form/Button';
+import { toast } from 'react-toastify';
 import { InputWrapper } from '../PersonalInformationForm/InputWrapper';
+import issuerVerify from './issuerVerify';
+import useRegisterCreditCard from '../../hooks/api/useCreditCard';
 
-function PaymentForm({ handleCreditCard, button }) {
+function PaymentForm({ handleCreditCard, button, ticketId, setPayed }) {
+  const { saveCreditCard } = useRegisterCreditCard();
   const [state, setState] = useState({
     number: '',
     expiry: '',
@@ -13,6 +17,29 @@ function PaymentForm({ handleCreditCard, button }) {
     name: '',
     focus: '',
   });
+
+  async function savingCreditCard() {
+    const issuer = issuerVerify(state.number.toString());
+    if(!issuer) return toast('O cartão deve ser valido!');
+    const body = {
+      ticketId,
+      cardData: {
+        issuer,
+        number: state.number,
+        name: state.name,
+        expirationDate: state.expiry,
+        cvv: state.cvc
+      }
+    };
+    try {
+      await saveCreditCard(body);
+      toast('Pagamento realizado com sucesso!');
+      setPayed(true);
+    } catch (err) {
+      console.log(err);
+      toast('Não foi possivel realizar o pagamento!');
+    } 
+  }
 
   const handleInputChange = (evt) => {
     const { name, value } = evt.target;
@@ -45,7 +72,7 @@ function PaymentForm({ handleCreditCard, button }) {
           </div>
         </Form>
       </Container>
-      <EndButton type="submit" onClick={() => handleCreditCard(state)}>
+      <EndButton type="submit" onClick={savingCreditCard}>
         {button}
       </EndButton>
     </>

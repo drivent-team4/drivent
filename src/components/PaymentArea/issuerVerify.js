@@ -1,4 +1,5 @@
 export default function issuerVerify(cardNumber) {
+  console.log(cardNumber);
   let issuer;
   const visaRegex = /^4/;
   const mastercardRegex = /^5[1-5]/;
