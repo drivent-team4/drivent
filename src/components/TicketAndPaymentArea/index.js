@@ -52,11 +52,10 @@ export default function TicketAndPaymentArea() {
   useEffect(() => {
     if (enrollmentApi?.enrollment) setEnrollment(true);
   }, [enrollmentApi.enrollmentLoading]);
-
+  
   const createTicketResume = async() => {
     const { TicketType, id } = await ticketApi.getTicket();
     setTicketId(id);
-    console.log(ticketId);
     if (TicketType.isRemote) {
       setChosenTicketDescription('Online');
     } else if (TicketType.includesHotel) {
@@ -66,6 +65,14 @@ export default function TicketAndPaymentArea() {
     }
     setChosenTicketValue(TicketType.price);
   };
+
+  useEffect(async() => {
+    if(ticketApi?.ticket) {
+      await createTicketResume();
+      setReservationCreated(true);
+    }
+    if(ticketApi?.ticket?.status === 'PAID') setPayed(true);
+  }, [ticketApi.ticketLoading]);
 
   async function handleReservation() {
     try {
