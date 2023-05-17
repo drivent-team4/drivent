@@ -1,14 +1,27 @@
 import { useHotel } from '../../../hooks/api/useHotel.js';
+import { toast } from 'react-toastify';
 import react, { useState } from 'react';
 import CardHotel from './CardHotel.js';
 import styled from 'styled-components';
 import CardRoom from './CardRoom.js';
+import { postBooking } from '../../../services/bookingApi.js';
+import useToken from '../../../hooks/useToken.js';
 
 export default function ContainerChoiceHotel() {
+  const token = useToken();
   const hotels = useHotel();
   const [selectedHotelRooms, setSelectedHotelRooms] = useState(null);
   const [selectedHotelId, setSelectedHotelId] = useState(null);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
+
+  const handleClick = async() => {
+    try {
+      await postBooking(token, selectedRoomId);
+      toast('Quarto reservado com sucesso!');
+    } catch (error) {
+      toast('Não foi possível reservar o quarto!');
+    }
+  };
 
   return (
     <>
@@ -42,7 +55,7 @@ export default function ContainerChoiceHotel() {
               />
             ))}
           </RoomList>
-          {selectedRoomId && <Button>RESERVAR QUARTO</Button>}
+          {selectedRoomId && <Button onClick={handleClick}>RESERVAR QUARTO</Button>}
         </ContainerRoom>
       )}
     </>
