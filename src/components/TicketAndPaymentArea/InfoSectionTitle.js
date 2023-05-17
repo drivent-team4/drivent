@@ -7,4 +7,8 @@ export const InfoSectionTitle = styled.p`
   color: #8E8E8E;
   margin-bottom: 17px;
   font-family: "Roboto", sans-serif;
+
+  b{
+    font-weight: 700;
+  }
 `;
