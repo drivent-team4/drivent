@@ -8,6 +8,7 @@ export default function ContainerChoiceHotel() {
   const hotels = useHotel();
   const [selectedHotelRooms, setSelectedHotelRooms] = useState(null);
   const [selectedHotelId, setSelectedHotelId] = useState(null);
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
 
   return (
     <>
@@ -21,6 +22,7 @@ export default function ContainerChoiceHotel() {
               image={hotel.image}
               setSelectedHotelRooms={setSelectedHotelRooms}
               setSelectedHotelId={setSelectedHotelId}
+              setSelectedRoomId={setSelectedRoomId}
               isSelected={selectedHotelId === hotel.id}
             />
           ))}
@@ -30,9 +32,17 @@ export default function ContainerChoiceHotel() {
           <p>Ótima pedida! Agora escolha seu quarto:</p>
           <RoomList>
             {selectedHotelRooms.map((room) => (
-              <CardRoom key={room.id} id={room.id} name={room.name} capacity={room.capacity} />
+              <CardRoom
+                key={room.id}
+                id={room.id}
+                name={room.name}
+                capacity={room.capacity}
+                setSelectedRoomId={setSelectedRoomId}
+                isSelected={selectedRoomId === room.id}
+              />
             ))}
           </RoomList>
+          {selectedRoomId && <Button>RESERVAR QUARTO</Button>}
         </ContainerRoom>
       )}
     </>
@@ -65,4 +75,28 @@ const RoomList = styled.ul`
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem 0rem;
+`;
+
+const Button = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 182px;
+  height: 37px;
+  background: #e0e0e0;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  margin-top: 1rem;
+  cursor: pointer;
+
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 14px;
+
+  :hover {
+    opacity: 0.6;
+  }
+  :active {
+    scale: 0.9;
+  }
 `;

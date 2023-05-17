@@ -3,10 +3,17 @@ import styled from 'styled-components';
 import { useHotelRooms } from '../../../hooks/api/useHotelRooms.js';
 import { useBookingInfos } from '../../../hooks/api/useBookingInfos.js';
 
-export default function CardHotel({ id, name, image, setSelectedHotelRooms, setSelectedHotelId, isSelected }) {
+export default function CardHotel({
+  id,
+  name,
+  image,
+  setSelectedHotelRooms,
+  setSelectedHotelId,
+  isSelected,
+  setSelectedRoomId,
+}) {
   const hotelRooms = useHotelRooms(id);
   const bookingInfos = useBookingInfos(id);
-  const [isCardSelected, setIsCardSelected] = useState(false);
 
   const roomTypesAvailable = hotelRooms && getRoomTypesAvailable(hotelRooms);
   const totalFreeRooms = hotelRooms && bookingInfos && calculateTotalFreeRooms(hotelRooms, bookingInfos);
@@ -14,6 +21,7 @@ export default function CardHotel({ id, name, image, setSelectedHotelRooms, setS
   const handleClick = () => {
     setSelectedHotelRooms(hotelRooms);
     setSelectedHotelId(id);
+    setSelectedRoomId(null);
   };
 
   return (
