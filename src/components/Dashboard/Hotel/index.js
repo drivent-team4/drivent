@@ -1,13 +1,27 @@
 import { useHotel } from '../../../hooks/api/useHotel.js';
+import { toast } from 'react-toastify';
 import react, { useState } from 'react';
 import CardHotel from './CardHotel.js';
 import styled from 'styled-components';
 import CardRoom from './CardRoom.js';
+import { postBooking } from '../../../services/bookingApi.js';
+import useToken from '../../../hooks/useToken.js';
 
 export default function ContainerChoiceHotel() {
+  const token = useToken();
   const hotels = useHotel();
   const [selectedHotelRooms, setSelectedHotelRooms] = useState(null);
   const [selectedHotelId, setSelectedHotelId] = useState(null);
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
+
+  const handleClick = async() => {
+    try {
+      await postBooking(token, selectedRoomId);
+      toast('Quarto reservado com sucesso!');
+    } catch (error) {
+      toast('Não foi possível reservar o quarto!');
+    }
+  };
 
   return (
     <>
@@ -21,6 +35,7 @@ export default function ContainerChoiceHotel() {
               image={hotel.image}
               setSelectedHotelRooms={setSelectedHotelRooms}
               setSelectedHotelId={setSelectedHotelId}
+              setSelectedRoomId={setSelectedRoomId}
               isSelected={selectedHotelId === hotel.id}
             />
           ))}
@@ -30,9 +45,17 @@ export default function ContainerChoiceHotel() {
           <p>Ótima pedida! Agora escolha seu quarto:</p>
           <RoomList>
             {selectedHotelRooms.map((room) => (
-              <CardRoom key={room.id} id={room.id} name={room.name} capacity={room.capacity} />
+              <CardRoom
+                key={room.id}
+                id={room.id}
+                name={room.name}
+                capacity={room.capacity}
+                setSelectedRoomId={setSelectedRoomId}
+                isSelected={selectedRoomId === room.id}
+              />
             ))}
           </RoomList>
+          {selectedRoomId && <Button onClick={handleClick}>RESERVAR QUARTO</Button>}
         </ContainerRoom>
       )}
     </>
@@ -65,4 +88,28 @@ const RoomList = styled.ul`
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem 0rem;
+`;
+
+const Button = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 182px;
+  height: 37px;
+  background: #e0e0e0;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  margin-top: 1rem;
+  cursor: pointer;
+
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 14px;
+
+  :hover {
+    opacity: 0.6;
+  }
+  :active {
+    scale: 0.9;
+  }
 `;
