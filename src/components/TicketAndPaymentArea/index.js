@@ -37,9 +37,11 @@ export default function TicketAndPaymentArea() {
 
   useEffect(() => {
     if(ticketTypes) {
-      setOnlinePrice(ticketTypes[0].price);
-      setWithoutHotelPrice(ticketTypes[1].price);
-      setWithHotelPrice(ticketTypes[2].price);
+      for(let i = 0; i < ticketTypes.length; i++) {
+        if(ticketTypes[i].isRemote) setOnlinePrice(ticketTypes[i].price);
+        if(!ticketTypes[i].isRemote && !ticketTypes[i].includesHotel) setWithoutHotel(ticketTypes[i].price);
+        if(ticketTypes[i].includesHotel) setWithHotel(ticketTypes[i].price);
+      }
     }
   }, [ticketTypes]);
 
