@@ -1,4 +1,4 @@
-import { getRoomBookingInfos } from '../../services/hotelApi.js';
+import { getRoomBookingInfos } from '../../services/bookingApi.js';
 import useAsync from '../useAsync';
 import useToken from '../useToken';
 
