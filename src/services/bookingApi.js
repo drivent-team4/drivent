@@ -25,3 +25,19 @@ export async function putBooking(token, bookingId, roomId) {
 
   return response.data;
 }
+
+export async function postBooking(token, roomId) {
+  const response = await api.post(
+    '/booking',
+    {
+      roomId,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+}
