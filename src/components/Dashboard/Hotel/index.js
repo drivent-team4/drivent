@@ -14,7 +14,7 @@ export default function ContainerChoiceHotel() {
   const [selectedHotelId, setSelectedHotelId] = useState(null);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
 
-  const handleClick = async() => {
+  const handleClick = async () => {
     try {
       await postBooking(token, selectedRoomId);
       toast('Quarto reservado com sucesso!');
@@ -50,6 +50,7 @@ export default function ContainerChoiceHotel() {
                 id={room.id}
                 name={room.name}
                 capacity={room.capacity}
+                guests={room.Booking.length}
                 setSelectedRoomId={setSelectedRoomId}
                 isSelected={selectedRoomId === room.id}
               />
