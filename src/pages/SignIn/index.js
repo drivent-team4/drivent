@@ -1,18 +1,19 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import AuthLayout from '../../layouts/Auth';
 
 import Input from '../../components/Form/Input';
 import Button from '../../components/Form/Button';
 import Link from '../../components/Link';
-import { Row, Title, Label } from '../../components/Auth';
+import { Row, Title, Label, GitHubButton } from '../../components/Auth';
 
 import EventInfoContext from '../../contexts/EventInfoContext';
 import UserContext from '../../contexts/UserContext';
 
 import useSignIn from '../../hooks/api/useSignIn';
+import useGithubOAuth from '../../hooks/api/useGithubOAuth';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -24,7 +25,12 @@ export default function SignIn() {
   const { setUserData } = useContext(UserContext);
 
   const navigate = useNavigate();
-  
+
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const code = query.get('code');
+  const { githubOAuthLoading, githubOAuth } = useGithubOAuth();
+
   async function submit(event) {
     event.preventDefault();
 
@@ -36,7 +42,43 @@ export default function SignIn() {
     } catch (err) {
       toast('Não foi possível fazer o login!');
     }
-  } 
+  }
+
+  async function handleGitHubOauth(event) {
+    event.preventDefault();
+
+    try {
+      const GITHUB_URL = process.env.REACT_APP_GITHUB_URL;
+      const params = {
+        client_id: process.env.REACT_APP_GITHUB_CLIENT_ID,
+        redirect_uri: 'http://localhost:3000/sign-in',
+        scope: 'user',
+        response_type: 'code',
+      };
+
+      const queryString = `client_id=${params.client_id}&redirect_uri=${params.redirect_uri}&scope=${params.scope}&response_type=${params.response_type}`;
+
+      window.location.href = `${GITHUB_URL}?${queryString}`;
+    } catch (err) {
+      toast('Não foi possível fazer o login!');
+    }
+  }
+
+  useEffect(() => {
+    if (code) {
+      const postCode = async() => {
+        try {
+          const userData = await githubOAuth(code);
+          setUserData(userData);
+          toast('Login realizado com sucesso!');
+          navigate('/dashboard');
+        } catch (err) {
+          toast('Não foi possível fazer o login!');
+        }
+      };
+      postCode();
+    };
+  }, []);
 
   return (
     <AuthLayout background={eventInfo.backgroundImageUrl}>
@@ -54,6 +96,9 @@ export default function SignIn() {
       </Row>
       <Row>
         <Link to="/enroll">Não possui login? Inscreva-se</Link>
+        <br />
+        <p>Or sign in with</p>
+        <GitHubButton onClick={handleGitHubOauth} disabled={githubOAuthLoading}>Sign in with GitHub</GitHubButton>
       </Row>
     </AuthLayout>
   );
