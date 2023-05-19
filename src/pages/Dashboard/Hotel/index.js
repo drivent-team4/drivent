@@ -4,10 +4,19 @@ import react, { useEffect, useState } from 'react';
 import ContainerChoiceHotel from '../../../components/Dashboard/Hotel/index.js';
 import useTicket from '../../../hooks/api/useTicket.js';
 import { StyledTypography } from '../../../components/TicketAndPaymentArea/index.js';
+import { Button } from '../../../components/Dashboard/Hotel/index.js';
+import useGetUserBookingInfo from '../../../hooks/api/useGetUserBookingInfo.js';
 
 export default function Hotel() {
+  const [changingMode, setChangingMode] = useState(false);
+  const [isReserved, setIsReserved] = useState(false);
   const [ticket, setTicket] = useState(undefined);
   const ticketApi = useTicket();
+  const { userBookingInfo, userBookingInfoLoading } = useGetUserBookingInfo();
+
+  useEffect(() => {
+    if(userBookingInfo) setIsReserved(true);
+  }, [userBookingInfoLoading]);
 
   useEffect(() => {
     if (ticketApi?.ticket) setTicket(ticketApi.ticket);
@@ -36,13 +45,19 @@ export default function Hotel() {
         </>
       )}
 
-      {ticket && ticket?.status === 'PAID' && ticket.TicketType.includesHotel && (
+      {ticket && ticket?.status === 'PAID' && ticket.TicketType.includesHotel && (!isReserved || changingMode) && (
         <ContainerHotel>
           <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
 
           <p>Primeiro, escolha seu hotel</p>
-          <ContainerChoiceHotel />
+          <ContainerChoiceHotel changingMode={changingMode} setIsReserved={setIsReserved} bookingId={userBookingInfo?.id} setChangingMode={setChangingMode}/>
         </ContainerHotel>
+      )}
+
+      {isReserved && !changingMode && (
+        <>
+          <Button onClick={() => setChangingMode(true)}>Trocar de quarto</Button>
+        </>
       )}
     </>
   );
