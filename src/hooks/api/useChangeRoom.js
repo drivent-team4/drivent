@@ -1,21 +1,21 @@
-import { putBooking } from "../../services/bookingApi";
-import useAsync from "../useAsync";
-import useToken from "../useToken";
+import { putBooking } from '../../services/bookingApi';
+import useAsync from '../useAsync';
+import useToken from '../useToken';
 
-export default async function useChangeRoom(){
-    const token = useToken();
+export default function useChangeRoom() {
+  const token = useToken();
 
-    const {
-        data: bookingId,
-        loading: changeRoomLoading,
-        error: changeRoomError,
-        act: changeRoom
-    } = useAsync(() => putBooking(token, bookingId, roomId), false);
+  const {
+    data: newBookingId,
+    loading: changeRoomLoading,
+    error: changeRoomError,
+    act: changeRoom,
+  } = useAsync((bookingId, roomId) => putBooking(token, bookingId, roomId));
 
-    return {
-        bookingId,
-        changeRoomLoading,
-        changeRoomError,
-        changeRoom
-    };
+  return {
+    newBookingId,
+    changeRoomLoading,
+    changeRoomError,
+    changeRoom,
+  };
 }
