@@ -37,9 +37,11 @@ export default function TicketAndPaymentArea() {
 
   useEffect(() => {
     if(ticketTypes) {
-      setOnlinePrice(ticketTypes[0].price);
-      setWithoutHotelPrice(ticketTypes[1].price);
-      setWithHotelPrice(ticketTypes[2].price);
+      for(let i = 0; i < ticketTypes.length; i++) {
+        if(ticketTypes[i].isRemote) setOnlinePrice(ticketTypes[i].price);
+        if(!ticketTypes[i].isRemote && !ticketTypes[i].includesHotel) setWithoutHotelPrice(ticketTypes[i].price);
+        if(ticketTypes[i].includesHotel) setWithHotelPrice(ticketTypes[i].price);
+      }
     }
   }, [ticketTypes]);
 
@@ -76,9 +78,9 @@ export default function TicketAndPaymentArea() {
 
   async function handleReservation() {
     try {
-      if (onlineSelected) await saveTicket(1);
-      if (withoutHotel) await saveTicket(2);
-      if (withHotel) await saveTicket(3);
+      if (onlineSelected) await saveTicket(ticketTypes.find(obj => obj.isRemote).id);
+      if (withoutHotel) await saveTicket(ticketTypes.find(obj => !obj.isRemote && !obj.includesHotel).id);
+      if (withHotel) await saveTicket(ticketTypes.find(obj => obj.includesHotel).id);
       await createTicketResume();
       toast('Ticket reservado com sucesso!');
       setReservationCreated(true);

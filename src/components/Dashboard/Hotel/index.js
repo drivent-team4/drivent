@@ -6,18 +6,28 @@ import styled from 'styled-components';
 import CardRoom from './CardRoom.js';
 import { postBooking } from '../../../services/bookingApi.js';
 import useToken from '../../../hooks/useToken.js';
+import useChangeRoom from '../../../hooks/api/useChangeRoom.js';
 
-export default function ContainerChoiceHotel() {
+export default function ContainerChoiceHotel({ changingMode, setIsReserved, bookingId, setChangingMode }) {
   const token = useToken();
   const hotels = useHotel();
+  const { changeRoom } = useChangeRoom();
   const [selectedHotelRooms, setSelectedHotelRooms] = useState(null);
   const [selectedHotelId, setSelectedHotelId] = useState(null);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
 
   const handleClick = async () => {
     try {
-      await postBooking(token, selectedRoomId);
-      toast('Quarto reservado com sucesso!');
+      if(!changingMode) {
+        await postBooking(token, selectedRoomId);
+        toast('Quarto reservado com sucesso!');
+        setIsReserved(true);
+      } 
+      if(changingMode) {
+        await changeRoom(bookingId, selectedRoomId);
+        toast('Quarto trocado com sucesso!');
+        setChangingMode(false);
+      }
     } catch (error) {
       toast('Não foi possível reservar o quarto!');
     }
@@ -91,7 +101,7 @@ const RoomList = styled.ul`
   padding: 1rem 0rem;
 `;
 
-const Button = styled.div`
+export const Button = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
