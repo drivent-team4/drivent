@@ -16,13 +16,13 @@ export default function ContainerChoiceHotel({ changingMode, setIsReserved, book
   const [selectedHotelId, setSelectedHotelId] = useState(null);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
 
-  const handleClick = async () => {
+  const handleClick = async() => {
     try {
       if(!changingMode) {
         await postBooking(token, selectedRoomId);
         toast('Quarto reservado com sucesso!');
         setIsReserved(true);
-      } 
+      }
       if(changingMode) {
         await changeRoom(bookingId, selectedRoomId);
         toast('Quarto trocado com sucesso!');
