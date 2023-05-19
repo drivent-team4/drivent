@@ -1,26 +1,34 @@
 import { User } from '@phosphor-icons/react';
 import styled from 'styled-components';
 
-export default function CardRoom({ id, name, capacity, setSelectedRoomId, isSelected }) {
+export default function CardRoom({ id, name, capacity, guests, setSelectedRoomId, isSelected }) {
   const renderIcons = () => {
     const icons = [];
     for (let i = 0; i < capacity; i++) {
-      const iconColor = isSelected && i === capacity -1 ? '#FF4791' : 'inherit';
-      const weight = isSelected && i === capacity -1 ? 'fill' : 'bold';
+      const isFullyBooked = guests >= i + 1;
+      const isLastIcon = i === capacity - 1;
+      const iconColor = isSelected && isLastIcon ? '#FF4791' : 'inherit';
+      const weight = (isSelected && isLastIcon) || isFullyBooked ? 'fill' : 'bold';
       icons.push(<User size={22} color={iconColor} weight={weight} key={i} />);
     }
     return icons;
   };
 
+  const handleClick = () => {
+    if (!isSelected && guests < capacity) {
+      setSelectedRoomId(id);
+    }
+  };
+ 
   return (
-    <Card isSelected={isSelected} onClick={() => setSelectedRoomId(id)}>
+    <Card isSelected={isSelected} onClick={handleClick} disabled={guests === capacity}>
       {name}
       <div>{renderIcons()}</div>
     </Card>
   );
 }
 
-const Card = styled.li`
+const Card = styled.button`
   width: 190px;
   height: 45px;
   display: flex;
@@ -48,5 +56,14 @@ const Card = styled.li`
   }
   :active {
     scale: 0.9;
+  }
+
+  :disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #CECECE;
+    :active {
+    scale: 1;
+  }
   }
 `;

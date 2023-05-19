@@ -22,7 +22,7 @@ export default function ContainerChoiceHotel({ changingMode, setIsReserved, book
         await postBooking(token, selectedRoomId);
         toast('Quarto reservado com sucesso!');
         setIsReserved(true);
-      } 
+      }
       if(changingMode) {
         await changeRoom(bookingId, selectedRoomId);
         toast('Quarto trocado com sucesso!');
@@ -60,6 +60,7 @@ export default function ContainerChoiceHotel({ changingMode, setIsReserved, book
                 id={room.id}
                 name={room.name}
                 capacity={room.capacity}
+                guests={room.Booking.length}
                 setSelectedRoomId={setSelectedRoomId}
                 isSelected={selectedRoomId === room.id}
               />
