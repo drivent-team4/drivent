@@ -6,6 +6,7 @@ import useTicket from '../../../hooks/api/useTicket.js';
 import { StyledTypography } from '../../../components/TicketAndPaymentArea/index.js';
 import { Button } from '../../../components/Dashboard/Hotel/index.js';
 import useGetUserBookingInfo from '../../../hooks/api/useGetUserBookingInfo.js';
+import ReservationSummary from '../../../components/Dashboard/Hotel/ReservationSummary.js';
 
 export default function Hotel() {
   const [changingMode, setChangingMode] = useState(false);
@@ -56,6 +57,7 @@ export default function Hotel() {
 
       {isReserved && !changingMode && (
         <>
+          <ReservationSummary />
           <Button onClick={() => setChangingMode(true)}>Trocar de quarto</Button>
         </>
       )}
