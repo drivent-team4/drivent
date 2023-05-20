@@ -1,14 +1,16 @@
-import react, { useState } from 'react';
+import react, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import CardReservation from '../Hotel/CardReservation.js';
 import styled from 'styled-components';
 import useGetUserBookingInfo from '../../../hooks/api/useGetUserBookingInfo.js';
-import { useHotel } from '../../../hooks/api/useHotel.js';
+import { useHotelByRoomId } from '../../../hooks/api/useHotel.js';
+import { useRoomById } from '../../../hooks/api/useRoom.js';
 
 export default function ReservationSummary() {
-  const booking = useGetUserBookingInfo();
-  const hotel = useHotel();
-  console.log(hotel);
+  const { userBookingInfo, userBookingInfoLoading } = useGetUserBookingInfo();
+  const [booking, setBooking] = useState();
+  const [hotel, setHotel] = useState();
+  const [room, setRoom] = useState();
 
   return (
     <>
@@ -17,12 +19,11 @@ export default function ReservationSummary() {
         <p>Você já escolheu seu quarto: </p>
         <HotelList>
           <CardReservation
-            id={booking.id}
-            image={hotel.image}
-            hotelName={hotel.name}
-            roomName={booking.Room.name}
-            capacity={booking.Room.capacity}
-            guests={booking.length}
+            image="https://www.ahstatic.com/photos/1276_ho_00_p_1024x768.jpg"
+            hotelName="Teste"
+            roomName="455"
+            capacity="3"
+            guests="2"
           />
         </HotelList>
       </ContainerHotel>

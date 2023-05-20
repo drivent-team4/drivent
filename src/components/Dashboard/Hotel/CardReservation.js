@@ -4,13 +4,13 @@ import { useHotelRooms } from '../../../hooks/api/useHotelRooms.js';
 import { useBookingInfos } from '../../../hooks/api/useBookingInfos.js';
 
 export default function CardHotel({
-  id,
   image,
   hotelName,
   roomName,
   capacity,
   guests
-}) {
+}) 
+{
   return (
     <Card>
       <img src={image} alt="ilustração do hotel" />
@@ -18,8 +18,8 @@ export default function CardHotel({
       <CardInfo>
         Quarto reservado:
         <p>{roomName}</p>
-        Vagas disponíveis:
-        <p>Você</p>
+        Pessoas no seu quarto:
+        <p>{(guests > 1) ? `Você e mais ${guests-1}` : 'Só você!'} </p>
       </CardInfo>
     </Card>
   );
@@ -34,7 +34,7 @@ const Card = styled.li`
 
   width: 196px;
   height: 264px;
-  background: ${({ selected }) => (selected ? '#FFEED2' : '#ebebeb')};
+  background: #FFEED2;
   border-radius: 10px;
 
   img {
