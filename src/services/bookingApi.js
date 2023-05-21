@@ -54,3 +54,14 @@ export async function putBooking(token, bookingId, roomId) {
 
   return response.data;
 }
+
+export async function fetchCountInfo(token, roomId) {
+  const response = await api.get(`/booking/count/${roomId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+  );
+
+  return response.data;
+}

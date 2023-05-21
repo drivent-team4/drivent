@@ -1,13 +1,9 @@
-import react, { useState } from 'react';
 import styled from 'styled-components';
-import { useHotelRooms } from '../../../hooks/api/useHotelRooms.js';
-import { useBookingInfos } from '../../../hooks/api/useBookingInfos.js';
 
-export default function CardHotel({
+export default function CardReservation({
   image,
   hotelName,
   roomName,
-  capacity,
   guests
 }) 
 {
@@ -18,8 +14,8 @@ export default function CardHotel({
       <CardInfo>
         Quarto reservado:
         <p>{roomName}</p>
-        Pessoas no seu quarto:
-        <p>{(guests > 1) ? `Você e mais ${guests-1}` : 'Só você!'} </p>
+        {/*         Pessoas no seu quarto:
+        <p>{(guests > 1) ? `Você e mais ${guests-1}` : 'Só você!'} </p> */}
       </CardInfo>
     </Card>
   );
@@ -30,6 +26,7 @@ const Card = styled.li`
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
+  padding-bottom: 1.5rem;
   cursor: pointer;
 
   width: 196px;

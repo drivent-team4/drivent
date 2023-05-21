@@ -56,10 +56,10 @@ export default function Hotel() {
       )}
 
       {isReserved && !changingMode && (
-        <>
+        <ContainerSummary>
           <ReservationSummary />
           <Button onClick={() => setChangingMode(true)}>Trocar de quarto</Button>
-        </>
+        </ContainerSummary>
       )}
     </>
   );
@@ -77,4 +77,8 @@ const ContainerHotel = styled.div`
     color: #8e8e8e;
     margin-bottom: 1rem;
   }
+`;
+
+const ContainerSummary = styled.div`
+
 `;

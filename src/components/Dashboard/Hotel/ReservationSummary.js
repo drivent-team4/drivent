@@ -3,14 +3,24 @@ import Typography from '@material-ui/core/Typography';
 import CardReservation from '../Hotel/CardReservation.js';
 import styled from 'styled-components';
 import useGetUserBookingInfo from '../../../hooks/api/useGetUserBookingInfo.js';
-import { useHotelByRoomId } from '../../../hooks/api/useHotel.js';
-import { useRoomById } from '../../../hooks/api/useRoom.js';
+import { fetchBookingCount } from '../../../hooks/api/useBookingInfos.js';
 
 export default function ReservationSummary() {
   const { userBookingInfo, userBookingInfoLoading } = useGetUserBookingInfo();
-  const [booking, setBooking] = useState();
-  const [hotel, setHotel] = useState();
-  const [room, setRoom] = useState();
+  const [bookingInfo, setBookingInfo] = useState();
+  const [hotelInfo, setHotelInfo] = useState();
+  const [roomInfo, setRoomInfo] = useState();
+
+  useEffect(() => {
+    const fetchBooking = async() => {
+      if (userBookingInfo) {
+        const bookingData = await userBookingInfo.Room;
+        setBookingInfo(bookingData);
+        setHotelInfo(bookingData.Hotel);
+      }
+    };
+    fetchBooking();
+  }, [userBookingInfoLoading]);
 
   return (
     <>
@@ -18,13 +28,12 @@ export default function ReservationSummary() {
         <StyledTypography variant="h4">Escolha de hotel e quarto</StyledTypography>
         <p>Você já escolheu seu quarto: </p>
         <HotelList>
-          <CardReservation
-            image="https://www.ahstatic.com/photos/1276_ho_00_p_1024x768.jpg"
-            hotelName="Teste"
-            roomName="455"
-            capacity="3"
-            guests="2"
-          />
+          {bookingInfo && hotelInfo && (<CardReservation
+            image={hotelInfo.image}
+            hotelName={hotelInfo.name}
+            roomName={bookingInfo.name}
+            guests="3"
+          />)}
         </HotelList>
       </ContainerHotel>
     </>
