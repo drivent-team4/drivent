@@ -145,7 +145,7 @@ export default function TicketAndPaymentArea() {
                         if (!withoutHotel === true && withHotel === true) setWithHotel(false);
                       }}
                     >
-                      Sem hotel<p>R$ + 0</p>
+                      Sem hotel<p>+ R$ 0</p>
                     </TicketModel>
 
                     <TicketModel
@@ -155,7 +155,7 @@ export default function TicketAndPaymentArea() {
                         if (!withHotel === true && withoutHotel === true) setWithoutHotel(false);
                       }}
                     >
-                      Com hotel<p>R$ + {withHotelPrice - withoutHotelPrice}</p>
+                      Com hotel<p>+ R$ {withHotelPrice - withoutHotelPrice}</p>
                     </TicketModel>
                   </TicketContainer>
                 </>

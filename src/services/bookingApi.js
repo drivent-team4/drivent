@@ -23,6 +23,19 @@ export async function getUserBookingInfo(token) {
   return response.data;
 }
 
+export async function getUserBookingInfoWithHotel(token) {
+  const response = await api.get(
+    '/booking/hotel',
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }    
+  );
+
+  return response.data;
+}
+
 export async function postBooking(token, roomId) {
   const response = await api.post(
     '/booking',
@@ -50,6 +63,17 @@ export async function putBooking(token, bookingId, roomId) {
         Authorization: `Bearer ${token}`,
       },
     }
+  );
+
+  return response.data;
+}
+
+export async function fetchCountInfo(token, roomId) {
+  const response = await api.get(`/booking/count/${roomId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
   );
 
   return response.data;
