@@ -20,7 +20,7 @@ export async function getHotelWithRooms(token, hotelId) {
 }
 
 export async function getHotelByRoomId(token, roomId) {
-  const response = await api.get(`/hotels/${roomId}`, {
+  const response = await api.get(`/hotels/room/${roomId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
