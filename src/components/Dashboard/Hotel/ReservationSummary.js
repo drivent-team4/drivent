@@ -2,25 +2,25 @@ import react, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import CardReservation from '../Hotel/CardReservation.js';
 import styled from 'styled-components';
-import useGetUserBookingInfo from '../../../hooks/api/useGetUserBookingInfo.js';
-import { fetchBookingCount } from '../../../hooks/api/useBookingInfos.js';
+import useGetUserBookingInfoWithHotel from '../../../hooks/api/useGetUserBookingInfoWithHotel.js';
 
 export default function ReservationSummary() {
-  const { userBookingInfo, userBookingInfoLoading } = useGetUserBookingInfo();
+  const { userBookingInfoWithHotel, userBookingInfoLoadingWithHotel } = useGetUserBookingInfoWithHotel();
   const [bookingInfo, setBookingInfo] = useState();
   const [hotelInfo, setHotelInfo] = useState();
   const [roomInfo, setRoomInfo] = useState();
 
   useEffect(() => {
     const fetchBooking = async() => {
-      if (userBookingInfo) {
-        const bookingData = await userBookingInfo.Room;
+      if (userBookingInfoWithHotel) {
+        const bookingData = await userBookingInfoWithHotel.Room;
+        console.log(bookingData);
         setBookingInfo(bookingData);
         setHotelInfo(bookingData.Hotel);
       }
     };
     fetchBooking();
-  }, [userBookingInfoLoading]);
+  }, [userBookingInfoLoadingWithHotel]);
 
   return (
     <>
