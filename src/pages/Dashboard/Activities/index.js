@@ -1,3 +1,7 @@
+import ActivitiesArea from '../../../components/ActivitiesArea';
+
 export default function Activities() {
-  return 'Atividades: Em breve!';
+  return (
+    <ActivitiesArea/>
+  );
 }
