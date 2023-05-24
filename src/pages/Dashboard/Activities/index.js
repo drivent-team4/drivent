@@ -2,6 +2,7 @@ import react, { useEffect, useState } from 'react';
 import { StyledTypography } from '../../../components/TicketAndPaymentArea/index.js';
 import TicketWarning from '../../../components/BookingArea/TicketWarning.js';
 import useTicket from '../../../hooks/api/useTicket.js';
+import InscriptionButton from './inscriptionButton.js';
 
 export default function Activities() {
   const [ticket, setTicket] = useState(undefined);
@@ -38,6 +39,7 @@ export default function Activities() {
         <>
           <StyledTypography variant="h4">Escolha de atividades</StyledTypography>
           Atividades: Em breve!
+          <InscriptionButton/>
         </>
       )}
     </>
