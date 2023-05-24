@@ -1,6 +1,7 @@
 import react, { useEffect, useState } from 'react';
 import { StyledTypography } from '../../../components/TicketAndPaymentArea/index.js';
 import TicketWarning from '../../../components/BookingArea/TicketWarning.js';
+import ContainerActivity from '../../../components/ActivityArea/index.js';
 import useTicket from '../../../hooks/api/useTicket.js';
 import InscriptionButton from './inscriptionButton.js';
 
@@ -37,9 +38,7 @@ export default function Activities() {
 
       {(ticket || ticket?.status === 'PAID') && (
         <>
-          <StyledTypography variant="h4">Escolha de atividades</StyledTypography>
-          Atividades: Em breve!
-          <InscriptionButton/>
+          <ContainerActivity />
         </>
       )}
     </>
