@@ -1,11 +1,11 @@
 import useAsync from '../useAsync';
 import useToken from '../useToken';
-import { getActivities } from '../../services/activityApi.js';
 
-export function useActivities() {
-  const token = useToken();
+import * as activityApi from '../../services/activityApi';
 
-  const activities = useAsync(() => getActivities(token));
+export function useActivity() {
+    const token = useToken();
+    const activityInfos = useAsync(() => activityApi.getActivity(token));
 
-  if (!activities.loading) return activities.data;
+    if (!activityInfos.loading) return activityInfos.data;
 }

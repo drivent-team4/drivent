@@ -3,6 +3,7 @@ import { StyledTypography } from '../../../components/TicketAndPaymentArea/index
 import TicketWarning from '../../../components/BookingArea/TicketWarning.js';
 import ContainerActivity from '../../../components/ActivityArea/index.js';
 import useTicket from '../../../hooks/api/useTicket.js';
+import InscriptionButton from './inscriptionButton.js';
 
 export default function Activities() {
   const [ticket, setTicket] = useState(undefined);
