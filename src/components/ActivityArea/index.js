@@ -1,4 +1,4 @@
-import { useActivities } from '../../hooks/api/useActivity.js';
+import { useActivity } from '../../hooks/api/useActivity.js';
 import styled from 'styled-components';
 import { StyledTypography } from '../TicketAndPaymentArea/index.js';
 import CardActivityDay from './CardActivityDay.js';
@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 
 export default function ContainerActivity() {
-  const activities = useActivities();
+  const activities = useActivity();
 
   const groupedActivities = activities?.reduce((grouped, activity) => {
     const startDay = dayjs(activity.startAt).format('YYYY-MM-DD');

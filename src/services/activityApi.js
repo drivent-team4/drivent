@@ -26,16 +26,16 @@ export async function postInscription(token, activityId) {
 }
 
 export async function deleteInscription(token, inscriptionId) {
-    const response = await api.post(
-      '/activity',
-      {
-        inscriptionId,
+  const response = await api.post(
+    '/activity',
+    {
+      inscriptionId,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
-  }
+    }
+  );
+  return response.data;
+}
