@@ -5,7 +5,7 @@ import CardActivityDay from './CardActivityDay.js';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import { useState } from 'react';
-import ActivitiesBox from './ActivitiesBox.js';
+import CardActivity from './CardActivity.js';
 
 export default function ContainerActivity() {
   const activities = useActivity();
@@ -28,7 +28,28 @@ export default function ContainerActivity() {
           ))}
       </ContainerChoiceDay>
       {(cardSelected.length !== 0) && (
-        <ActivitiesBox card={cardSelected} />
+        <ContainerRooms>
+          <Room>
+            <RoomTitle>Auditório Principal</RoomTitle>
+            <RoomActivities>
+              <CardActivity />
+            </RoomActivities>
+          </Room>
+
+          <Room>
+            <RoomTitle>Auditório Lateral</RoomTitle>
+            <RoomActivities>
+              <CardActivity />
+            </RoomActivities>
+          </Room>
+
+          <Room>
+            <RoomTitle>Sala de Workshop</RoomTitle>
+            <RoomActivities>
+              <CardActivity />
+            </RoomActivities>
+          </Room>
+        </ContainerRooms>
       )}
     </>
   );
@@ -37,4 +58,37 @@ export default function ContainerActivity() {
 const ContainerChoiceDay = styled.div`
   display: flex;
   gap: 1rem;
+`;
+
+const ContainerRooms = styled.div`
+  display: flex;
+  margin-top: 25px;
+  width: 100%;
+  height: 425px;
+`;
+
+const Room = styled.div`
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const RoomTitle = styled.p`
+  font-size: 17px;
+  font-weight: 400;
+  color: #7B7B7B;
+  font-family: 'Roboto';
+  margin-bottom: 7px;
+`;
+
+const RoomActivities = styled.div`
+  border-top: 1px solid #D7D7D7;
+  border-right: 1px solid #D7D7D7;
+  border-bottom: 1px solid #D7D7D7;
+  border-left: 1px solid #D7D7D7;
+  height: 100%;
+  width: 100%;
+  padding: 10px 9px;
 `;
