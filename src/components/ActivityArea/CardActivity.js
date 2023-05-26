@@ -1,24 +1,40 @@
+import { IoEnterOutline } from 'react-icons/io5';
+import { MdCancel } from 'react-icons/md';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
 import styled from 'styled-components';
 
 import { useInscriptionPost } from '../../hooks/api/useInscription';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import dayjs from 'dayjs';
 
-const CardActivity = ({ activityInfo, card }) => {
-  const { capacity } = activityInfo;
-  const { Inscription: inscriptions } = activityInfo;
+const CardActivity = ({ card }) => {
+  const { capacity } = card;
+  const { Inscription: inscriptions } = card;
   const remaining = capacity - inscriptions.length;
   const { act } = useInscriptionPost();
   const [isConfirming, setIsConfirming] = useState(false);
+
+  const end = dayjs(card.endAt).locale('pt-br').format('HH:MM');
+  const start = dayjs(card.startAt).locale('pt-br').format('HH:MM');
+  const size = calcTime();
+
+  function calcTime() {
+    const diff = Number(dayjs(card.endAt).locale('pt-br').format('HH')) - Number(dayjs(card.startAt).locale('pt-br').format('HH'));
+
+    if (diff === 0) return 1;
+
+    return diff;
+  }
   
   return (
     <>
       {card.length === 0 ?
         <></> :
-        <CardAnimation>
-          <CardActivityContainer>
+        <CardAnimation size={(size) * 80}>
+          <CardActivityContainer size={(size) * 80}>
             <CardActivityContent>
-              <CardActivityTitle>Minecraft: montando o PC ideal</CardActivityTitle>
-              <CardActivityTime>09:00 - 10:00</CardActivityTime>
+              <CardActivityTitle>{card.name}</CardActivityTitle>
+              <CardActivityTime>{start} - {end}</CardActivityTime>
             </CardActivityContent>
             <CardLineDiv />
             {remaining > 0 ? (
@@ -41,7 +57,7 @@ const CardActivity = ({ activityInfo, card }) => {
             <p>Quer confirmar sua inscrição?</p>
             <div>
               <button onClick={() => setIsConfirming(false)}>Não</button>
-              <button onClick={() => act(activityInfo.id)}>Sim</button>
+              <button onClick={() => act(card.id)}>Sim</button>
             </div>
           </ConfirmAction>
         </CardAnimation>
@@ -67,7 +83,8 @@ const CardAnimation = styled.div`
   position: relative;
   overflow: hidden;
   width: 100%;
-  height: 80px;
+  height: ${props => `${props.size}px`};
+  margin: 0 0 12px 0;
 `;
 
 const CardActivityContainer = styled.div`
@@ -75,7 +92,7 @@ const CardActivityContainer = styled.div`
   padding: 12px 10px;
   border-radius: 5px;
   background-color: #f1f1f1;
-  height: 80px;
+  height: ${props => `${props.size}px`};
   display: flex;
   justify-content: space-between;
   transition: all 1s ease;

@@ -52,21 +52,27 @@ export default function ContainerActivity() {
           <Room>
             <RoomTitle>Auditório Principal</RoomTitle>
             <RoomActivities>
-              <CardActivity card={id1} />
+              {id1.map(act => (
+                <CardActivity key={act.id} card={act} />
+              ))}
             </RoomActivities>
           </Room>
 
           <Room>
             <RoomTitle>Auditório Lateral</RoomTitle>
             <RoomActivities>
-              <CardActivity card={id2} />
+              {id2.map(act => (
+                <CardActivity key={act.id} card={act} />
+              ))}
             </RoomActivities>
           </Room>
 
           <Room>
             <RoomTitle>Sala de Workshop</RoomTitle>
             <RoomActivities>
-              <CardActivity card={id3} />
+              {id3.map(act => (
+                <CardActivity key={act.id} card={act} />
+              ))}
             </RoomActivities>
           </Room>
         </ContainerRooms>
