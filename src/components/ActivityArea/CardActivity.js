@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-const CardActivity = () => {
+const CardActivity = ({ card }) => {
   const [isConfirming, setIsConfirming] = useState(false);
 
   function selectCard() {
@@ -10,23 +10,26 @@ const CardActivity = () => {
 
   return (
     <>
-      <CardAnimation>
-        <CardActivityContainer>
-          <CardActivityContent>
-            <CardActivityTitle>Minecraft: montando o PC ideal</CardActivityTitle>
-            <CardActivityTime>09:00 - 10:00</CardActivityTime>
-          </CardActivityContent>
-          <CardLineDiv />
-          <button onClick={() => selectCard()}>SELECT</button>
-        </CardActivityContainer>
-        <ConfirmAction isConfirming={isConfirming}>
-          <p>Quer confirmar sua inscrição?</p>
-          <div>
-            <button onClick={() => selectCard()}>Não</button>
-            <button onClick={() => selectCard()}>Sim</button>
-          </div>
-        </ConfirmAction>
-      </CardAnimation>
+      {card.length === 0 ?
+        <></> :
+        <CardAnimation>
+          <CardActivityContainer>
+            <CardActivityContent>
+              <CardActivityTitle>{card[0].name}</CardActivityTitle>
+              <CardActivityTime>09:00 - 10:00</CardActivityTime>
+            </CardActivityContent>
+            <CardLineDiv />
+            <button onClick={() => selectCard()}>SELECT</button>
+          </CardActivityContainer>
+          <ConfirmAction isConfirming={isConfirming}>
+            <p>Quer confirmar sua inscrição?</p>
+            <div>
+              <button onClick={() => selectCard()}>Não</button>
+              <button onClick={() => selectCard()}>Sim</button>
+            </div>
+          </ConfirmAction>
+        </CardAnimation>
+      }
     </>
   );
 };

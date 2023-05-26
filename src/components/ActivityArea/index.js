@@ -4,12 +4,15 @@ import { StyledTypography } from '../TicketAndPaymentArea/index.js';
 import CardActivityDay from './CardActivityDay.js';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CardActivity from './CardActivity.js';
 
 export default function ContainerActivity() {
   const activities = useActivity();
   const [cardSelected, setCardSelected] = useState([]);
+  const [id1, setId1] = useState([]);
+  const [id2, setId2] = useState([]);
+  const [id3, setId3] = useState([]);
 
   const groupedActivities = activities?.reduce((grouped, activity) => {
     const startDay = dayjs(activity.startAt).format('YYYY-MM-DD');
@@ -17,6 +20,23 @@ export default function ContainerActivity() {
     grouped[startDay].push(activity);
     return grouped;
   }, {});
+
+  useEffect(() => {
+    if (cardSelected.length !== 0) {
+      setId1([]);
+      setId2([]);
+      setId3([]);
+      cardSelected.forEach(card => {
+        if(card.auditoryId === 1) {
+          setId1(prevId => [...prevId, card]);
+        } else if(card.auditoryId === 2) {
+          setId2(prevId => [...prevId, card]);
+        } else {
+          setId3(prevId => [...prevId, card]);
+        }
+      });
+    }
+  }, [cardSelected]);
 
   return (
     <>
@@ -32,21 +52,21 @@ export default function ContainerActivity() {
           <Room>
             <RoomTitle>Auditório Principal</RoomTitle>
             <RoomActivities>
-              <CardActivity />
+              <CardActivity card={id1} />
             </RoomActivities>
           </Room>
 
           <Room>
             <RoomTitle>Auditório Lateral</RoomTitle>
             <RoomActivities>
-              <CardActivity />
+              <CardActivity card={id2} />
             </RoomActivities>
           </Room>
 
           <Room>
             <RoomTitle>Sala de Workshop</RoomTitle>
             <RoomActivities>
-              <CardActivity />
+              <CardActivity card={id3} />
             </RoomActivities>
           </Room>
         </ContainerRooms>
