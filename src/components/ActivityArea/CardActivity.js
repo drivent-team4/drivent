@@ -1,6 +1,17 @@
+import { IoEnterOutline } from 'react-icons/io5';
+import { MdCancel } from 'react-icons/md';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
 import styled from 'styled-components';
 
-const CardActivity = () => {
+import { useInscriptionPost } from '../../hooks/api/useInscription';
+import { useEffect, useState } from 'react';
+
+const CardActivity = ({ activityInfo }) => {
+  const { capacity } = activityInfo;
+  const { Inscription: inscriptions } = activityInfo;
+  const remaining = capacity - inscriptions.length;
+  const { act } = useInscriptionPost();
+  const [isConfirming, setIsConfirming] = useState(false);
   return (
     <>
       <CardAnimation>
@@ -10,19 +21,44 @@ const CardActivity = () => {
             <CardActivityTime>09:00 - 10:00</CardActivityTime>
           </CardActivityContent>
           <CardLineDiv />
-          <button>SELECT</button>
+          {remaining > 0 ? (
+            <div onClick={() => setIsConfirming(true)}>
+              <Container hasSeats={true}>
+                <IoEnterOutline fontSize={'35px'} />
+                <p>{remaining} vagas</p>
+              </Container>
+            </div>
+          ) : (
+            <div>
+              <Container hasSeats={false}>
+                <MdCancel fontSize={'35px'} />
+                <p>Esgotado!</p>
+              </Container>
+            </div>
+          )}
         </CardActivityContainer>
-        <ConfirmAction isConfirming={false}>
+        <ConfirmAction isConfirming={isConfirming}>
           <p>Quer confirmar sua inscrição?</p>
           <div>
-            <button>Não</button>
-            <button>Sim</button>
+            <button onClick={() => setIsConfirming(false)}>Não</button>
+            <button onClick={() => act(activityInfo.id)}>Sim</button>
           </div>
         </ConfirmAction>
       </CardAnimation>
     </>
   );
 };
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: ${(props) => (props.hasSeats ? '#078632' : '#CC6666')};
+
+  p {
+    font-size: 12px;
+  }
+`;
 
 export default CardActivity;
 
@@ -37,7 +73,7 @@ const CardActivityContainer = styled.div`
   width: 265px;
   padding: 12px 10px;
   border-radius: 5px;
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   height: 80px;
   display: flex;
   justify-content: space-between;
@@ -68,19 +104,19 @@ const CardActivityTime = styled.p`
 const CardLineDiv = styled.div`
   height: 100%;
   width: 1px;
-  background-color: #CFCFCF;
+  background-color: #cfcfcf;
 `;
 
 const ConfirmAction = styled.div`
   position: absolute;
   top: 0px;
-  right: ${props => props.isConfirming ? '0px':'-265px'};
+  right: ${(props) => (props.isConfirming ? '0px' : '-265px')};
   width: 265px;
   padding: 12px 10px 12px 10px;
   border-radius: 5px;
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   height: 80px;
-  
+
   transition: all 0.4s ease;
   display: flex;
   flex-direction: column;
@@ -103,8 +139,8 @@ const ConfirmAction = styled.div`
     width: 50%;
     height: 28px;
     border: none;
-    background-color: #FFD180;
-    color: #FFF;
+    background-color: #ffd180;
+    color: #fff;
     font-family: 'Roboto';
     font-weight: 400;
     font-size: 16px;
@@ -112,7 +148,7 @@ const ConfirmAction = styled.div`
       cursor: pointer;
     }
     &:last-of-type {
-      background-color: #FB4398;
+      background-color: #fb4398;
     }
   }
 `;

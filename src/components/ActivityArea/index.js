@@ -29,21 +29,27 @@ export default function ContainerActivity() {
         <Room>
           <RoomTitle>Auditório Principal</RoomTitle>
           <RoomActivities>
-            <CardActivity />
+            {
+              activities ? <CardActivity activityInfo={activities[0]}/> : ''
+            }
           </RoomActivities>
         </Room>
 
         <Room>
           <RoomTitle>Auditório Lateral</RoomTitle>
           <RoomActivities isCenter={true}>
-            <CardActivity />
+            {
+              activities ? <CardActivity activityInfo={activities[1]}/> : ''
+            }
           </RoomActivities>
         </Room>
 
         <Room>
           <RoomTitle>Sala de Workshop</RoomTitle>
           <RoomActivities>
-            <CardActivity />
+            {
+              activities ? <CardActivity activityInfo={activities[2] }/> : ''
+            }
           </RoomActivities>
         </Room>
       </ContainerRooms>

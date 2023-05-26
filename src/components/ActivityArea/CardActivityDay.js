@@ -6,8 +6,6 @@ import 'dayjs/locale/pt-br';
 const CardActivityDay = ({ startDay, activities }) => {
   const formattedDay = dayjs(startDay).locale('pt-br').format('dddd, DD/MM').replace('-feira', '');
 
-  console.log(activities);
-
   return <CardDay>{formattedDay}</CardDay>;
 };
 
