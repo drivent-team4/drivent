@@ -1,6 +1,13 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const CardActivity = () => {
+  const [isConfirming, setIsConfirming] = useState(false);
+
+  function selectCard() {
+    setIsConfirming(!isConfirming);
+  }
+
   return (
     <>
       <CardAnimation>
@@ -10,13 +17,13 @@ const CardActivity = () => {
             <CardActivityTime>09:00 - 10:00</CardActivityTime>
           </CardActivityContent>
           <CardLineDiv />
-          <button>SELECT</button>
+          <button onClick={() => selectCard()}>SELECT</button>
         </CardActivityContainer>
-        <ConfirmAction isConfirming={false}>
+        <ConfirmAction isConfirming={isConfirming}>
           <p>Quer confirmar sua inscrição?</p>
           <div>
-            <button>Não</button>
-            <button>Sim</button>
+            <button onClick={() => selectCard()}>Não</button>
+            <button onClick={() => selectCard()}>Sim</button>
           </div>
         </ConfirmAction>
       </CardAnimation>
@@ -29,12 +36,12 @@ export default CardActivity;
 const CardAnimation = styled.div`
   position: relative;
   overflow: hidden;
-  width: 265px;
+  width: 100%;
   height: 80px;
 `;
 
 const CardActivityContainer = styled.div`
-  width: 265px;
+  width: 100%;
   padding: 12px 10px;
   border-radius: 5px;
   background-color: #F1F1F1;

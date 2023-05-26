@@ -14,6 +14,7 @@ import UserContext from '../../contexts/UserContext';
 
 import useSignIn from '../../hooks/api/useSignIn';
 import useGithubOAuth from '../../hooks/api/useGithubOAuth';
+import githubIco from './github-ico.png';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -98,7 +99,10 @@ export default function SignIn() {
         <Link to="/enroll">Não possui login? Inscreva-se</Link>
         <br />
         <p>Or sign in with</p>
-        <GitHubButton onClick={handleGitHubOauth} disabled={githubOAuthLoading}>Sign in with GitHub</GitHubButton>
+        <GitHubButton onClick={handleGitHubOauth} disabled={githubOAuthLoading}>
+          <span>Sign in with GitHub</span>
+          <img src={githubIco} alt='GitHub Icon' />
+        </GitHubButton>
       </Row>
     </AuthLayout>
   );
