@@ -1,3 +1,4 @@
+
 import { IoEnterOutline } from 'react-icons/io5';
 import { MdCancel } from 'react-icons/md';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
@@ -12,6 +13,7 @@ const CardActivity = ({ activityInfo }) => {
   const remaining = capacity - inscriptions.length;
   const { act } = useInscriptionPost();
   const [isConfirming, setIsConfirming] = useState(false);
+  
   return (
     <>
       <CardAnimation>
@@ -65,12 +67,12 @@ export default CardActivity;
 const CardAnimation = styled.div`
   position: relative;
   overflow: hidden;
-  width: 265px;
+  width: 100%;
   height: 80px;
 `;
 
 const CardActivityContainer = styled.div`
-  width: 265px;
+  width: 100%;
   padding: 12px 10px;
   border-radius: 5px;
   background-color: #f1f1f1;

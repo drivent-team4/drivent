@@ -1,4 +1,4 @@
-import react, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyledTypography } from '../../../components/TicketAndPaymentArea/index.js';
 import TicketWarning from '../../../components/BookingArea/TicketWarning.js';
 import ContainerActivity from '../../../components/ActivityArea/index.js';
