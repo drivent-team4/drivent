@@ -27,30 +27,34 @@ export default function ContainerActivity() {
             <CardActivityDay key={startDay} startDay={startDay} activities={groupedActivities[startDay]} setCardSelected={setCardSelected} />
           ))}
       </ContainerChoiceDay>
-      {(cardSelected.length !== 0) && (
-        <ContainerRooms>
-          <Room>
-            <RoomTitle>Auditório Principal</RoomTitle>
-            <RoomActivities>
-              <CardActivity />
-            </RoomActivities>
-          </Room>
+      <ContainerRooms>
+        <Room>
+          <RoomTitle>Auditório Principal</RoomTitle>
+          <RoomActivities>
+            {
+              activities ? <CardActivity activityInfo={activities[0]}/> : ''
+            }
+          </RoomActivities>
+        </Room>
 
-          <Room>
-            <RoomTitle>Auditório Lateral</RoomTitle>
-            <RoomActivities>
-              <CardActivity />
-            </RoomActivities>
-          </Room>
+        <Room>
+          <RoomTitle>Auditório Lateral</RoomTitle>
+          <RoomActivities isCenter={true}>
+            {
+              activities ? <CardActivity activityInfo={activities[1]}/> : ''
+            }
+          </RoomActivities>
+        </Room>
 
-          <Room>
-            <RoomTitle>Sala de Workshop</RoomTitle>
-            <RoomActivities>
-              <CardActivity />
-            </RoomActivities>
-          </Room>
-        </ContainerRooms>
-      )}
+        <Room>
+          <RoomTitle>Sala de Workshop</RoomTitle>
+          <RoomActivities>
+            {
+              activities ? <CardActivity activityInfo={activities[2] }/> : ''
+            }
+          </RoomActivities>
+        </Room>
+      </ContainerRooms>
     </>
   );
 }

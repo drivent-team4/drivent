@@ -5,15 +5,31 @@ import { AiOutlineCheckCircle } from 'react-icons/ai';
 import styled from 'styled-components';
 
 export default function InscriptionButton({ activityInfo }) {
-  console.log(activityInfo);
   const { capacity } = activityInfo;
-  const inscriptions = activityInfo.Inscriptions.length;
-  const remaining = capacity - inscriptions;
+  const { Inscription: inscriptions } = activityInfo;
+  const remaining = capacity - inscriptions.length;
 
-  return <>{remaining > 0 ? <IoEnterOutline /> : <MdCancel />}</>;
+  return (
+    <Container>
+      {remaining > 0 ?
+        <>
+          <IoEnterOutline fontSize={'35px'} color={'#078632'}/>
+          <p>{remaining} vagas</p>
+        </>
+        : 
+        <MdCancel fontSize={'35px'}/>
+      }
+    </Container>
+  );
 }
 
-const ConfirmButton = styled.div`
-  width: 40px;
-  height: 40px;
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  p{
+    font-size: 12px;
+    color: #078632
+  }
 `;
