@@ -4,9 +4,12 @@ import { StyledTypography } from '../TicketAndPaymentArea/index.js';
 import CardActivityDay from './CardActivityDay.js';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
+import { useState } from 'react';
+import ActivitiesBox from './ActivitiesBox.js';
 
 export default function ContainerActivity() {
   const activities = useActivity();
+  const [cardSelected, setCardSelected] = useState([]);
 
   const groupedActivities = activities?.reduce((grouped, activity) => {
     const startDay = dayjs(activity.startAt).format('YYYY-MM-DD');
@@ -21,9 +24,12 @@ export default function ContainerActivity() {
       <ContainerChoiceDay>
         {groupedActivities &&
           Object.keys(groupedActivities).map((startDay) => (
-            <CardActivityDay key={startDay} startDay={startDay} activities={groupedActivities[startDay]} />
+            <CardActivityDay key={startDay} startDay={startDay} activities={groupedActivities[startDay]} setCardSelected={setCardSelected} />
           ))}
       </ContainerChoiceDay>
+      {(cardSelected.length !== 0) && (
+        <ActivitiesBox card={cardSelected} />
+      )}
     </>
   );
 }
