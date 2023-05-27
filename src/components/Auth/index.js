@@ -45,9 +45,19 @@ export const GitHubButton = styled.button`
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-weight: 500;
   line-height: 1.75;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &:hover {
     cursor: pointer;
     box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
     background-color: #000;
+  }
+
+  & img {
+    height: 80%;
+    margin-left: 8px;
   }
 `;

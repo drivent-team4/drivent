@@ -3,10 +3,12 @@ import styled from 'styled-components';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 
-const CardActivityDay = ({ startDay, activities }) => {
+const CardActivityDay = ({ startDay, activities, setCardSelected }) => {
   const formattedDay = dayjs(startDay).locale('pt-br').format('dddd, DD/MM').replace('-feira', '');
 
-  return <CardDay>{formattedDay}</CardDay>;
+  return <CardDay onClick={() => {
+    setCardSelected(activities);
+  }}>{formattedDay}</CardDay>;
 };
 
 export default CardActivityDay;
