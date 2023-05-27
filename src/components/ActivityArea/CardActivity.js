@@ -4,7 +4,9 @@ import { AiOutlineCheckCircle } from 'react-icons/ai';
 import styled from 'styled-components';
 
 import { useInscriptionPost } from '../../hooks/api/useInscription';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import UserContext from '../../contexts/UserContext';
 
 const CardActivity = ({ activityInfo }) => {
   const { capacity } = activityInfo;
@@ -12,6 +14,27 @@ const CardActivity = ({ activityInfo }) => {
   const remaining = capacity - inscriptions.length;
   const { act } = useInscriptionPost();
   const [isConfirming, setIsConfirming] = useState(false);
+
+  const {
+    userData: {
+      user: { id: userId },
+    },
+  } = useContext(UserContext);
+  let hasConfirmed = false;
+  for (let i in inscriptions) {
+    if (inscriptions[i].userId === userId) hasConfirmed = true;
+  }
+
+  async function handleClick() {
+    try {
+      await act(activityInfo.id);
+      toast('Inscrição realizada!');
+      setIsConfirming(false);
+    } catch (error) {
+      toast('Não foi possivel realizar a inscrição');
+      console.log(error);
+    }
+  }
   return (
     <>
       <CardAnimation>
@@ -21,7 +44,14 @@ const CardActivity = ({ activityInfo }) => {
             <CardActivityTime>09:00 - 10:00</CardActivityTime>
           </CardActivityContent>
           <CardLineDiv />
-          {remaining > 0 ? (
+          {hasConfirmed ? (
+            <div>
+              <Container hasSeats={true}>
+                <AiOutlineCheckCircle fontSize={'35px'} />
+                <p>Inscrito!</p>
+              </Container>
+            </div>
+          ) : remaining > 0 ? (
             <div onClick={() => setIsConfirming(true)}>
               <Container hasSeats={true}>
                 <IoEnterOutline fontSize={'35px'} />
@@ -41,7 +71,7 @@ const CardActivity = ({ activityInfo }) => {
           <p>Quer confirmar sua inscrição?</p>
           <div>
             <button onClick={() => setIsConfirming(false)}>Não</button>
-            <button onClick={() => act(activityInfo.id)}>Sim</button>
+            <button onClick={handleClick}>Sim</button>
           </div>
         </ConfirmAction>
       </CardAnimation>
@@ -53,6 +83,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   color: ${(props) => (props.hasSeats ? '#078632' : '#CC6666')};
 
   p {
