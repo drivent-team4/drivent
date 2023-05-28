@@ -34,8 +34,7 @@ const CardActivity = ({ card }) => {
       toast('Inscrição realizada!');
       setIsConfirming(false);
     } catch (error) {
-      toast('Não foi possivel realizar a inscrição');
-      console.log(error);
+      toast('Não foi possivel realizar a inscrição! Confirme a disponibilidade de vagas e se não há conflitos de horários com inscrições realizadas previamente.');
     }
   }
 
