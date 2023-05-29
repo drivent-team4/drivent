@@ -2,7 +2,6 @@ import { IoEnterOutline } from 'react-icons/io5';
 import { MdCancel } from 'react-icons/md';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import styled from 'styled-components';
-
 import { useInscriptionDelete, useInscriptionPost } from '../../hooks/api/useInscription';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -16,6 +15,7 @@ const CardActivity = ({ card }) => {
   const { act } = useInscriptionPost();
   const inscriptionDelete = useInscriptionDelete();
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
   const end = dayjs(card.endAt).locale('pt-br').format('HH:MM');
   const start = dayjs(card.startAt).locale('pt-br').format('HH:MM');
   const size = calcTime();
@@ -39,7 +39,7 @@ const CardActivity = ({ card }) => {
       setIsConfirming(false);
       setHasConfirmed(true);
     } catch (error) {
-      toast('Não foi possivel realizar a inscrição');
+      toast('Não foi possivel realizar a inscrição! Confirme a disponibilidade de vagas e se não há conflitos de horários com inscrições realizadas previamente.');
       console.log(error);
       setIsConfirming(false);
     }
@@ -81,7 +81,7 @@ const CardActivity = ({ card }) => {
               </CardActivityTime>
             </CardActivityContent>
             <CardLineDiv />
-            {hasConfirmed ? (
+            {(hasConfirmed || isEnrolled) ? (
               <Container hasSeats={true}>
                 <div>
                   <AiOutlineCheckCircle onClick={() => setIsConfirming(true)} fontSize={'35px'} />
