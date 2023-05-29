@@ -5,14 +5,14 @@ import * as activityApi from '../../services/activityApi';
 
 export function useInscriptionPost() {
   const token = useToken();
-  const { act, data } = useAsync((activityId) => activityApi.postInscription(token, activityId));
+  const { act, data } = useAsync((activityId) => activityApi.postInscription(token, activityId), false);
 
   return { act, data };
 }
 
-export function useInscriptionDelete(inscriptionId) {
+export function useInscriptionDelete() {
   const token = useToken();
-  const inscriptionInfo = useAsync(() => activityApi.deleteInscription(token, inscriptionId));
+  const { act, data } = useAsync((activityId) => activityApi.deleteInscription(token, activityId), false);
 
-  if (!inscriptionInfo.loading) return inscriptionInfo.data;
+  return { act, data };
 }

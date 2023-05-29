@@ -3,7 +3,7 @@ import { MdCancel } from 'react-icons/md';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import styled from 'styled-components';
 
-import { useInscriptionPost } from '../../hooks/api/useInscription';
+import { useInscriptionDelete, useInscriptionPost } from '../../hooks/api/useInscription';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import UserContext from '../../contexts/UserContext';
@@ -14,6 +14,7 @@ const CardActivity = ({ card }) => {
   const { Inscription: inscriptions } = card;
   const remaining = capacity - inscriptions.length;
   const { act } = useInscriptionPost();
+  const inscriptionDelete = useInscriptionDelete();
   const [isConfirming, setIsConfirming] = useState(false);
   const end = dayjs(card.endAt).locale('pt-br').format('HH:MM');
   const start = dayjs(card.startAt).locale('pt-br').format('HH:MM');
@@ -29,7 +30,7 @@ const CardActivity = ({ card }) => {
     for (let i in inscriptions) {
       if (inscriptions[i].userId === userId) setHasConfirmed(true);
     }
-  }, []);
+  }, []); 
 
   async function handleClick() {
     try {
@@ -40,6 +41,20 @@ const CardActivity = ({ card }) => {
     } catch (error) {
       toast('Não foi possivel realizar a inscrição');
       console.log(error);
+      setIsConfirming(false);
+    }
+  }
+
+  async function handleDeleteInscription() {
+    try {
+      await inscriptionDelete.act(card.id);
+      toast('Remoção realizada!');
+      setIsConfirming(false);
+      setHasConfirmed(false);
+    } catch (error) {
+      toast('Não foi possível realizar a desinscrição faltando menos de 24h');
+      console.log(error);
+      setIsConfirming(false);
     }
   }
 
@@ -69,7 +84,7 @@ const CardActivity = ({ card }) => {
             {hasConfirmed ? (
               <Container hasSeats={true}>
                 <div>
-                  <AiOutlineCheckCircle fontSize={'35px'} />
+                  <AiOutlineCheckCircle onClick={() => setIsConfirming(true)} fontSize={'35px'} />
                   <p>Inscrito!</p>
                 </div>
               </Container>
@@ -90,10 +105,10 @@ const CardActivity = ({ card }) => {
             )}
           </CardActivityContainer>
           <ConfirmAction size={size * 80} isConfirming={isConfirming}>
-            <p>Quer confirmar sua inscrição?</p>
+            <p>Quer {hasConfirmed ? 'retirar':'confirmar'} sua inscrição?</p>
             <div>
               <button onClick={() => setIsConfirming(false)}>Não</button>
-              <button onClick={handleClick}>Sim</button>
+              <button onClick={hasConfirmed ? handleDeleteInscription:handleClick}>Sim</button>
             </div>
           </ConfirmAction>
         </CardAnimation>
