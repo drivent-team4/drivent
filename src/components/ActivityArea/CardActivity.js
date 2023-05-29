@@ -4,7 +4,7 @@ import { AiOutlineCheckCircle } from 'react-icons/ai';
 import styled from 'styled-components';
 
 import { useInscriptionPost } from '../../hooks/api/useInscription';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import UserContext from '../../contexts/UserContext';
 import dayjs from 'dayjs';
@@ -23,16 +23,20 @@ const CardActivity = ({ card }) => {
       user: { id: userId },
     },
   } = useContext(UserContext);
-  let hasConfirmed = false;
-  for (let i in inscriptions) {
-    if (inscriptions[i].userId === userId) hasConfirmed = true;
-  }
+  let [hasConfirmed, setHasConfirmed] = useState(false);
+
+  useEffect(() => {
+    for (let i in inscriptions) {
+      if (inscriptions[i].userId === userId) setHasConfirmed(true);
+    }
+  }, []);
 
   async function handleClick() {
     try {
       await act(card.id);
       toast('Inscrição realizada!');
       setIsConfirming(false);
+      setHasConfirmed(true);
     } catch (error) {
       toast('Não foi possivel realizar a inscrição');
       console.log(error);
@@ -85,7 +89,7 @@ const CardActivity = ({ card }) => {
               </Container>
             )}
           </CardActivityContainer>
-          <ConfirmAction isConfirming={isConfirming}>
+          <ConfirmAction size={size * 80} isConfirming={isConfirming}>
             <p>Quer confirmar sua inscrição?</p>
             <div>
               <button onClick={() => setIsConfirming(false)}>Não</button>
@@ -107,6 +111,9 @@ const Container = styled.div`
 
   p {
     font-size: 12px;
+  }
+  &:hover{
+    cursor: pointer;
   }
 `;
 
@@ -134,7 +141,7 @@ const CardActivityContainer = styled.div`
 const CardActivityContent = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 172px;
+  width: 172px;
 `;
 
 const CardActivityTitle = styled.p`
@@ -166,7 +173,7 @@ const ConfirmAction = styled.div`
   padding: 12px 10px 12px 10px;
   border-radius: 5px;
   background-color: #f1f1f1;
-  height: 80px;
+  height: ${(props) => `${props.size}px`};
 
   transition: all 0.4s ease;
   display: flex;
