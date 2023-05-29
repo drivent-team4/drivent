@@ -2,8 +2,8 @@ import { IoEnterOutline } from 'react-icons/io5';
 import { MdCancel } from 'react-icons/md';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import styled from 'styled-components';
-import { useInscriptionPost } from '../../hooks/api/useInscription';
-import { useContext, useState } from 'react';
+import { useInscriptionDelete, useInscriptionPost } from '../../hooks/api/useInscription';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import UserContext from '../../contexts/UserContext';
 import dayjs from 'dayjs';
@@ -13,6 +13,7 @@ const CardActivity = ({ card }) => {
   const { Inscription: inscriptions } = card;
   const remaining = capacity - inscriptions.length;
   const { act } = useInscriptionPost();
+  const inscriptionDelete = useInscriptionDelete();
   const [isConfirming, setIsConfirming] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const end = dayjs(card.endAt).locale('pt-br').format('HH:MM');
@@ -23,19 +24,37 @@ const CardActivity = ({ card }) => {
       user: { id: userId },
     },
   } = useContext(UserContext);
-  let hasConfirmed = false;
-  for (let i in inscriptions) {
-    if (inscriptions[i].userId === userId) hasConfirmed = true;
-  }
+  let [hasConfirmed, setHasConfirmed] = useState(false);
+
+  useEffect(() => {
+    for (let i in inscriptions) {
+      if (inscriptions[i].userId === userId) setHasConfirmed(true);
+    }
+  }, []); 
 
   async function handleClick() {
     try {
       await act(card.id);
       toast('Inscrição realizada!');
       setIsConfirming(false);
-      setIsEnrolled(true);
+      setHasConfirmed(true);
     } catch (error) {
       toast('Não foi possivel realizar a inscrição! Confirme a disponibilidade de vagas e se não há conflitos de horários com inscrições realizadas previamente.');
+      console.log(error);
+      setIsConfirming(false);
+    }
+  }
+
+  async function handleDeleteInscription() {
+    try {
+      await inscriptionDelete.act(card.id);
+      toast('Remoção realizada!');
+      setIsConfirming(false);
+      setHasConfirmed(false);
+    } catch (error) {
+      toast('Não foi possível realizar a desinscrição faltando menos de 24h');
+      console.log(error);
+      setIsConfirming(false);
     }
   }
 
@@ -65,7 +84,7 @@ const CardActivity = ({ card }) => {
             {(hasConfirmed || isEnrolled) ? (
               <Container hasSeats={true}>
                 <div>
-                  <AiOutlineCheckCircle fontSize={'35px'} />
+                  <AiOutlineCheckCircle onClick={() => setIsConfirming(true)} fontSize={'35px'} />
                   <p>Inscrito!</p>
                 </div>
               </Container>
@@ -85,11 +104,11 @@ const CardActivity = ({ card }) => {
               </Container>
             )}
           </CardActivityContainer>
-          <ConfirmAction isConfirming={isConfirming}>
-            <p>Quer confirmar sua inscrição?</p>
+          <ConfirmAction size={size * 80} isConfirming={isConfirming}>
+            <p>Quer {hasConfirmed ? 'retirar':'confirmar'} sua inscrição?</p>
             <div>
               <button onClick={() => setIsConfirming(false)}>Não</button>
-              <button onClick={handleClick}>Sim</button>
+              <button onClick={hasConfirmed ? handleDeleteInscription:handleClick}>Sim</button>
             </div>
           </ConfirmAction>
         </CardAnimation>
@@ -107,6 +126,9 @@ const Container = styled.div`
 
   p {
     font-size: 12px;
+  }
+  &:hover{
+    cursor: pointer;
   }
 `;
 
@@ -134,7 +156,7 @@ const CardActivityContainer = styled.div`
 const CardActivityContent = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 172px;
+  width: 172px;
 `;
 
 const CardActivityTitle = styled.p`
@@ -166,7 +188,7 @@ const ConfirmAction = styled.div`
   padding: 12px 10px 12px 10px;
   border-radius: 5px;
   background-color: #f1f1f1;
-  height: 80px;
+  height: ${(props) => `${props.size}px`};
 
   transition: all 0.4s ease;
   display: flex;

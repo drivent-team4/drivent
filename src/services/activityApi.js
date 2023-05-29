@@ -25,12 +25,9 @@ export async function postInscription(token, activityId) {
   return response.data;
 }
 
-export async function deleteInscription(token, inscriptionId) {
-  const response = await api.post(
-    '/activity',
-    {
-      inscriptionId,
-    },
+export async function deleteInscription(token, activityId) {
+  const response = await api.delete(
+    `/activity/${activityId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
